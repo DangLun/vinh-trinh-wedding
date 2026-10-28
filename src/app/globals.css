@@ -1,26 +1,39 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Bảng màu nằm ở src/config/theme.ts, được gắn thành biến --<tên> trên <html> */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-milk: var(--milk);
+  --color-bubblegum: var(--bubblegum);
+  --color-lilac: var(--lilac);
+  --color-sky: var(--sky);
+  --color-butter: var(--butter);
+  --color-plum: var(--plum);
+  --color-blush: var(--blush);
+  --color-mist: var(--mist);
+  --color-ice: var(--ice);
+  --color-cream: var(--cream);
+  --color-background: var(--milk);
+  --color-foreground: var(--plum);
+  --font-sans: var(--font-be-vietnam);
+  --font-display: var(--font-unbounded);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--milk);
+  color: var(--plum);
+  font-family: var(--font-sans), sans-serif;
+}
+
+:focus-visible {
+  outline: 3px solid var(--lilac);
+  outline-offset: 3px;
+}
+
+/* Chữ "sticker" kiểu Y2K: lớp bóng lệch hồng + xanh */
+.y2k-type {
+  text-shadow:
+    0.04em 0.04em 0 var(--bubblegum),
+    0.08em 0.08em 0 var(--sky);
 }
