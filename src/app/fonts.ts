@@ -2,9 +2,10 @@ import {
   Be_Vietnam_Pro,
   Cormorant_Garamond,
   Imperial_Script,
+  Waterfall,
 } from "next/font/google";
 
-// Cả ba font đều có bộ ký tự tiếng Việt
+// Mọi font đều có bộ ký tự tiếng Việt
 
 /** Nội dung: nét mảnh, đọc dễ ở cỡ nhỏ */
 export const sans = Be_Vietnam_Pro({
@@ -27,6 +28,16 @@ export const serif = Cormorant_Garamond({
  */
 export const script = Imperial_Script({
   variable: "--font-imperial",
+  subsets: ["latin", "vietnamese"],
+  weight: "400",
+});
+
+/**
+ * Chữ ký nét đều (như viết bằng bút mực): tên trên thiệp mời, theo mẫu thiệp giấy.
+ * Chỉ dùng cỡ lớn, cùng lý do với Imperial Script.
+ */
+export const signature = Waterfall({
+  variable: "--font-waterfall",
   subsets: ["latin", "vietnamese"],
   weight: "400",
 });

@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { MaiFlower } from "@/components/ui/MaiFlower";
 import { palette } from "@/config/theme";
-import { lunarOf, lunarYear, wedding } from "@/config/wedding";
+import { couple, lunarOf, lunarYear } from "@/config/wedding";
 import { formatDotDate, formatWeekday } from "@/lib/date";
 
 /** Kích thước chuẩn ảnh xem trước của Zalo / Facebook / Messenger */
@@ -108,7 +108,7 @@ export async function inviteCard({ to, date }: { to?: string; date: string }) {
               marginTop: to ? 4 : 10,
             }}
           >
-            {wedding.groom.name}
+            {couple[0].name}
             <span
               style={{
                 fontFamily: "Cormorant Italic",
@@ -119,7 +119,7 @@ export async function inviteCard({ to, date }: { to?: string; date: string }) {
             >
               &
             </span>
-            {wedding.bride.name}
+            {couple[1].name}
           </div>
           <div
             style={{

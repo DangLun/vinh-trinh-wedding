@@ -2,6 +2,15 @@ export type Person = {
   /** Tên gọi ngắn hiển thị ở Hero, tiêu đề trang */
   name: string;
   fullName: string;
+  /** Thứ bậc trong nhà, in dưới tên trên thiệp: "Trưởng Nữ", "Út Nam"… */
+  rank: string;
+};
+
+/** Một họ đứng tên trên thiệp (nhà trai / nhà gái) */
+export type Family = {
+  /** Phụ huynh đứng tên, theo thứ tự in trên thiệp: "Ông Trần Văn A", "Bà Lê Thị B" */
+  parents: string[];
+  address: string;
 };
 
 /** Mã lễ, dùng để chọn khách được mời dự lễ nào (Guest.events) */
@@ -50,6 +59,7 @@ export type GalleryItem = GalleryImage | GalleryVideo;
 export type WeddingConfig = {
   groom: Person;
   bride: Person;
+  families: { groom: Family; bride: Family };
   hashtag: string;
   marquee: string[];
   /** Ảnh chân dung trong khung vòm ở Hero (ảnh dọc, khoảng 3:4) */

@@ -40,6 +40,37 @@ export const formatWeekday = (iso: string) => weekday.format(new Date(iso));
 export const formatDateTime = (iso: string) =>
   fullDateTime.format(new Date(iso));
 
+const parts = new Intl.DateTimeFormat("vi-VN", {
+  weekday: "long",
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+  timeZone: WEDDING_TIME_ZONE,
+});
+
+const part = (iso: string) => {
+  const map = Object.fromEntries(
+    parts.formatToParts(new Date(iso)).map((p) => [p.type, p.value]),
+  );
+  return (type: string) => map[type] ?? "";
+};
+
+/** "08 giờ 00 phút" (lời in trên thiệp cưới) */
+export function formatClockWords(iso: string) {
+  const p = part(iso);
+  return `${p("hour")} giờ ${p("minute")} phút`;
+}
+
+/** "Chủ Nhật, ngày 14 tháng 02 năm 2027" (lời in trên thiệp cưới) */
+export function formatDateWords(iso: string) {
+  const p = part(iso);
+  const day = p("weekday");
+  return `${day[0].toUpperCase()}${day.slice(1)}, ngày ${p("day")} tháng ${p("month")} năm ${p("year")}`;
+}
+
 export type TimeLeft = {
   days: number;
   hours: number;

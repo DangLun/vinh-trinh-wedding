@@ -4,11 +4,22 @@ import type { WeddingConfig } from "@/types/wedding";
 
 // Toàn bộ thông tin đám cưới — sửa ở đây, cả trang tự cập nhật.
 export const wedding: WeddingConfig = {
-  groom: { name: "Vinh", fullName: "Nguyễn Văn Vinh" },
-  bride: { name: "Trinh", fullName: "Trần Thị Trinh" },
+  groom: { name: "Vinh", fullName: "Thành Vinh", rank: "Trưởng Nam" },
+  bride: { name: "Trinh", fullName: "Lê Thị Tố Trinh", rank: "Trưởng Nữ" },
+  // DỮ LIỆU MẪU: tên phụ huynh, địa chỉ và thứ bậc ở trên in lên mặt trong thiệp mời
+  families: {
+    bride: {
+      parents: ["Ông Trần Văn Phúc", "Bà Lê Thị Hạnh"],
+      address: "Xã Mỹ Khánh, TP. Cần Thơ",
+    },
+    groom: {
+      parents: ["Ông Nguyễn Văn Lộc", "Bà Phạm Thị Thu"],
+      address: "Phường Tân An, TP. Cần Thơ",
+    },
+  },
   hashtag: "#VinhTrinhForever",
   marquee: [
-    "Vinh & Trinh",
+    "Trinh & Vinh",
     "Xuân Đinh Mùi",
     "Lễ Vu Quy",
     "Lễ Tân Hôn",
@@ -49,11 +60,15 @@ export const wedding: WeddingConfig = {
   music: "/music/bg.mp3",
 };
 
-/** "Vinh & Trinh" */
-export const coupleName = `${wedding.groom.name} & ${wedding.bride.name}`;
+/** Thứ tự hiển thị tên cặp đôi: cô dâu trước, chú rể sau */
+export const couple = [wedding.bride, wedding.groom] as const;
+
+/** "Trinh & Vinh" */
+export const coupleName = `${couple[0].name} & ${couple[1].name}`;
 
 /** Năm âm lịch của đám cưới (Tết Đinh Mùi là 6/2/2027) */
-export const lunarYear = "Xuân Đinh Mùi";
+export const lunarYearName = "Đinh Mùi";
+export const lunarYear = `Xuân ${lunarYearName}`;
 
 /** Ngày âm lịch của một mốc giờ, lấy từ lễ trùng thời điểm đó */
 export const lunarOf = (iso: string) =>

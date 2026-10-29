@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { palette } from "@/config/theme";
-import { wedding } from "@/config/wedding";
+import { couple } from "@/config/wedding";
 
-const initials = [wedding.groom.name[0], wedding.bride.name[0]] as const;
+const initials = [couple[0].name[0], couple[1].name[0]] as const;
 
 /**
  * Chữ lồng V & T trong hai vòng tròn vàng lá: dấu sáp phong bì, cuối "Chuyện tình mình", footer.

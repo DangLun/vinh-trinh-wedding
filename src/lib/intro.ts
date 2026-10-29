@@ -20,7 +20,7 @@ export function hasSeenIntro() {
   }
 }
 
-/** Intro gọi khi hai cánh cửa bắt đầu mở: Hero được phép chạy hiệu ứng xuất hiện */
+/** Gọi khi màn mở đầu bắt đầu khép lại (cửa mở / bấm "Vào xem thiệp"): Hero được phép chạy hiệu ứng xuất hiện */
 export function markIntroOpen() {
   opened = true;
   window.dispatchEvent(new Event(OPEN_EVENT));
@@ -31,7 +31,8 @@ function subscribe(onChange: () => void) {
   return () => window.removeEventListener(OPEN_EVENT, onChange);
 }
 
-// Không có màn mở đầu (vd. link mời riêng đã có phong bì) hoặc màn bị ẩn vì đã xem → mở sẵn
+// Màn mở đầu là cửa sơn mài (trang chung) hoặc thiệp mời (link riêng), cùng mang id INTRO_ID.
+// Không có màn nào hoặc màn bị ẩn vì đã xem → mở sẵn
 function getSnapshot() {
   if (opened) return true;
   const el = document.getElementById(INTRO_ID);

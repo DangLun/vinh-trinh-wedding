@@ -1,8 +1,8 @@
-import { wedding } from "@/config/wedding";
+import { couple } from "@/config/wedding";
 import { cn } from "@/lib/cn";
 
 /**
- * Tên cặp đôi viết liền một khối "Vinh & Trinh": tên bằng thư pháp Imperial Script,
+ * Tên cặp đôi viết liền một khối "Trinh & Vinh" (thứ tự lấy từ `couple`): tên bằng thư pháp Imperial Script,
  * dấu "&" bằng Cormorant nghiêng nhỏ hơn (không chồng hai kiểu viết tay lên nhau).
  * Cỡ chữ lấy từ phần tử cha; `ampClassName` đổi màu "&" theo nền.
  */
@@ -15,7 +15,7 @@ export function CoupleName({
 }) {
   return (
     <span className={cn("font-script", className)}>
-      {wedding.groom.name}
+      {couple[0].name}
       <span
         aria-label="và"
         className={cn(
@@ -25,7 +25,7 @@ export function CoupleName({
       >
         &amp;
       </span>
-      {wedding.bride.name}
+      {couple[1].name}
     </span>
   );
 }

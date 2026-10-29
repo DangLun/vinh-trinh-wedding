@@ -87,7 +87,7 @@ function Door({
 }
 
 /**
- * Màn mở đầu của trang chung: hai cánh cửa sơn mài đóng kín, chữ lồng V & T vẽ dần,
+ * Màn mở đầu của trang chung: hai cánh cửa sơn mài đóng kín, chữ lồng T & V vẽ dần,
  * rồi cửa mở sang hai bên như cửa nhà ngày rước dâu, để lộ Hero phía sau.
  * Chỉ chạy lần đầu (localStorage); có nút bỏ qua; giảm chuyển động thì chỉ mờ dần.
  */

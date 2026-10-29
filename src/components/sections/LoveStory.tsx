@@ -113,7 +113,7 @@ function Thread({ progress }: { progress: MotionValue<number> }) {
 }
 
 /**
- * Cuối sợi chỉ: chữ lồng V & T, vòng ngoài được vẽ dần trong đoạn cuộn cuối,
+ * Cuối sợi chỉ: chữ lồng T & V, vòng ngoài được vẽ dần trong đoạn cuộn cuối,
  * như sợi chỉ thắt lại thành vòng.
  */
 function Finale({

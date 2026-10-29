@@ -4,7 +4,7 @@ import SmoothScroll from "@/components/effects/SmoothScroll";
 import { siteUrl } from "@/config/site";
 import { paletteVars } from "@/config/theme";
 import { coupleName, wedding } from "@/config/wedding";
-import { sans, script, serif } from "./fonts";
+import { sans, script, serif, signature } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="vi"
-      className={`${sans.variable} ${serif.variable} ${script.variable} antialiased`}
+      className={`${sans.variable} ${serif.variable} ${script.variable} ${signature.variable} antialiased`}
       style={paletteVars}
     >
       <body>

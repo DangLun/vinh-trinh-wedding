@@ -12,11 +12,15 @@
   --color-gold-deep: var(--goldDeep);
   --color-son: var(--son);
   --color-ink: var(--ink);
+  --color-linen: var(--linen);
+  --color-wine: var(--wine);
+  --color-stone: var(--stone);
   --color-background: var(--ivory);
   --color-foreground: var(--ink);
   --font-sans: var(--font-be-vietnam);
   --font-serif: var(--font-cormorant);
   --font-script: var(--font-imperial);
+  --font-signature: var(--font-waterfall);
 }
 
 @theme {

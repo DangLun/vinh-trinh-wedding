@@ -23,6 +23,10 @@ export const palette = {
   son: "#9e1b1b",
   // Chữ mực
   ink: "#2a2522",
+  // Thiệp mời (theo mẫu thiệp giấy): nền trắng ngà, chữ đỏ rượu, chữ phụ xám ấm
+  linen: "#f5f1ea",
+  wine: "#7a1f2b",
+  stone: "#b7afa6",
 } as const;
 
 export type PaletteColor = keyof typeof palette;
