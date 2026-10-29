@@ -1,3 +1,4 @@
+import { sampleStory } from "@/data/sample-story";
 import { sampleGallery } from "@/data/sample-gallery";
 import type { WeddingConfig } from "@/types/wedding";
 
@@ -6,9 +7,9 @@ export const wedding: WeddingConfig = {
   groom: { name: "Vinh", fullName: "Nguyễn Văn Vinh" },
   bride: { name: "Trinh", fullName: "Trần Thị Trinh" },
   hashtag: "#VinhTrinhForever",
-  marquee: ["TEAM INH INH", "SAVE THE DATE", "VINH ♥ TRINH"],
+  marquee: ["TEAM INH INH", "VALENTINE", "VINH ♥ TRINH", "CƯỚI ĐẦU XUÂN"],
   // ISO 8601, giờ Việt Nam
-  date: "2027-02-13T08:00:00+07:00",
+  date: "2027-02-14T08:00:00+07:00",
   events: [
     {
       title: "Lễ Vu Quy",
@@ -25,11 +26,8 @@ export const wedding: WeddingConfig = {
       mapUrl: "https://maps.google.com/?q=",
     },
   ],
-  loveStory: [
-    { date: "2020", title: "Lần đầu gặp nhau", text: "Kể chuyện ở đây..." },
-    { date: "2022", title: "Chính thức hẹn hò", text: "Kể chuyện ở đây..." },
-    { date: "2026", title: "Cầu hôn", text: "Kể chuyện ở đây..." },
-  ],
+  // Đang dùng dữ liệu mẫu (src/data/sample-story.ts) để thử giao diện, thay bằng chuyện thật.
+  loveStory: sampleStory,
   // Đặt ảnh vào public/images/gallery rồi khai báo tại đây.
   // Đang dùng dữ liệu mẫu (src/data/sample-gallery.ts) để test giao diện.
   gallery: sampleGallery,

@@ -1,9 +1,12 @@
 import { useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
 import * as THREE from "three";
-import { palette } from "@/config/theme";
+import { metals } from "@/config/theme";
 import { setCursorVariant } from "@/lib/cursor";
-import { ChromeMaterial } from "./ChromeMaterial";
+import { MetalMaterial } from "./ChromeMaterial";
+
+// Bán kính 1, bản nhẫn 0.15: thanh như nhẫn cưới thật, đủ đặc để bắt sáng
+const RING: [number, number, number, number] = [1, 0.15, 64, 200];
 
 /** Cặp nhẫn lồng nhau: tự xoay, nghiêng theo con trỏ, phóng nhẹ khi hover. */
 export function WeddingRings({ onSelect }: { onSelect?: () => void }) {
@@ -41,12 +44,12 @@ export function WeddingRings({ onSelect }: { onSelect?: () => void }) {
     <group ref={ref} {...interactive}>
       {/* Một nhẫn nằm mặt XY, nhẫn kia xoay 90° quanh trục X, lệch tâm để móc vào nhau */}
       <mesh position={[-0.6, 0, 0]}>
-        <torusGeometry args={[1, 0.2, 48, 160]} />
-        <ChromeMaterial color={palette.bubblegum} />
+        <torusGeometry args={RING} />
+        <MetalMaterial color={metals.roseGold} />
       </mesh>
       <mesh position={[0.6, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[1, 0.2, 48, 160]} />
-        <ChromeMaterial color={palette.lilac} />
+        <torusGeometry args={RING} />
+        <MetalMaterial color={metals.gold} />
       </mesh>
     </group>
   );

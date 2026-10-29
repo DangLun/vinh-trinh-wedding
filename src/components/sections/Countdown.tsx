@@ -1,12 +1,20 @@
 "use client";
 
-import { AnimatePresence, MotionConfig, motion } from "motion/react";
-import type { CSSProperties } from "react";
+import {
+  AnimatePresence,
+  animate,
+  MotionConfig,
+  motion,
+  useInView,
+  useReducedMotion,
+} from "motion/react";
+import { useEffect, useRef, useState } from "react";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import { palette, type PaletteColor } from "@/config/theme";
 import { wedding } from "@/config/wedding";
 import { useCountdown } from "@/hooks/useCountdown";
+import { type BearerGender, TrayBearer } from "./TrayBearer";
 import { cn } from "@/lib/cn";
+import { maiBurst } from "@/lib/confetti";
 import {
   formatDotDate,
   formatTime,
@@ -17,24 +25,28 @@ import {
 const units: {
   key: keyof TimeLeft;
   label: string;
-  tone: PaletteColor;
-  /** Ô "ngày" là thông tin chính nên to và chiếm riêng một hàng trên mobile */
+  gender: BearerGender;
+  /** Mâm "ngày" là thông tin chính: đứng riêng một hàng trên mobile */
   main?: boolean;
 }[] = [
-  { key: "days", label: "ngày", tone: "butter", main: true },
-  { key: "hours", label: "giờ", tone: "blush" },
-  { key: "minutes", label: "phút", tone: "mist" },
-  { key: "seconds", label: "giây", tone: "ice" },
+  { key: "days", label: "ngày", gender: "male", main: true },
+  { key: "hours", label: "giờ", gender: "female" },
+  { key: "minutes", label: "phút", gender: "male" },
+  { key: "seconds", label: "giây", gender: "female" },
 ];
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
 const isOver = (t: TimeLeft) => t.days + t.hours + t.minutes + t.seconds === 0;
 
-/** Số trượt lên khi đổi giá trị; khung overflow-hidden cắt phần trượt ra ngoài */
+/**
+ * Số trượt lên khi đổi giá trị; khung overflow-hidden cắt phần trượt ra ngoài.
+ * Khung nới thêm padding cho lớp bóng lệch .y2k-type (lệch 0.08em sang phải/xuống) khỏi bị cắt,
+ * margin âm bù lại để kích thước ô không đổi.
+ */
 function RollingNumber({ value }: { value: string }) {
   return (
-    <span className="relative inline-flex overflow-hidden">
+    <span className="relative -mx-[0.12em] -mb-[0.12em] inline-flex overflow-hidden px-[0.12em] pb-[0.12em]">
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
           key={value}
@@ -51,9 +63,57 @@ function RollingNumber({ value }: { value: string }) {
   );
 }
 
+/**
+ * Số trên mâm: "00" khi người bưng chưa vào chỗ, vào chỗ rồi thì lăn từ 0 lên giá trị thật,
+ * sau đó chạy theo đồng hồ như thường (RollingNumber).
+ */
+function TrayNumber({ value, arrived }: { value: number; arrived: boolean }) {
+  const still = useReducedMotion();
+  const [counted, setCounted] = useState<number | null>(null);
+  const [done, setDone] = useState(false);
+  // Giá trị mới nhất, đọc đúng lúc bắt đầu đếm; giây nhảy giữa chừng không làm đếm lại
+  const latest = useRef(value);
+  useEffect(() => {
+    latest.current = value;
+  });
+
+  useEffect(() => {
+    if (!arrived || done || still) return;
+    const controls = animate(0, latest.current, {
+      duration: 0.9,
+      ease: "easeOut",
+      onUpdate: (v) => setCounted(Math.round(v)),
+      onComplete: () => setDone(true),
+    });
+    return () => controls.stop();
+  }, [arrived, done, still]);
+
+  // Giảm chuyển động: bỏ đoạn đếm, hiện số thật ngay khi vào chỗ
+  if (done || (arrived && still)) return <RollingNumber value={pad(value)} />;
+  return <>{pad(counted ?? 0)}</>;
+}
+
 export default function Countdown() {
   const left = useCountdown(wedding.date);
   const over = left !== null && isOver(left);
+  const team = useRef<HTMLDivElement>(null);
+  // Đội bưng quả bắt đầu đi vào khi khối đếm ngược lộ ra khoảng 1/3
+  const go = useInView(team, { once: true, amount: 0.35 });
+  const [arrived, setArrived] = useState<boolean[]>(() =>
+    units.map(() => false),
+  );
+
+  const onArrive = (i: number) => {
+    setArrived((a) => a.map((v, k) => v || k === i));
+    // Người cuối vào chỗ: bắn chùm hoa mai từ giữa đội
+    if (i === units.length - 1 && team.current) {
+      const r = team.current.getBoundingClientRect();
+      maiBurst({
+        x: (r.left + r.width / 2) / window.innerWidth,
+        y: (r.top + r.height * 0.4) / window.innerHeight,
+      });
+    }
+  };
 
   return (
     <MotionConfig reducedMotion="user">
@@ -64,34 +124,48 @@ export default function Countdown() {
 
         {!over && (
           <div
+            ref={team}
             role="timer"
             aria-live="off"
-            className="grid grid-cols-3 gap-4 sm:grid-cols-[1.5fr_1fr_1fr_1fr] sm:gap-5"
+            className="grid grid-cols-3 items-end gap-x-3 gap-y-6 sm:grid-cols-4 sm:gap-x-6"
           >
-            {units.map(({ key, label, tone, main }) => (
-              <div
+            {units.map(({ key, label, gender, main }, i) => (
+              // Bước từ mép trái màn hình vào chỗ, người sau trễ hơn người trước một nhịp
+              <motion.div
                 key={key}
+                initial={{ x: "-110vw" }}
+                animate={go ? { x: 0 } : undefined}
+                transition={{
+                  duration: 1.6,
+                  ease: [0.22, 1, 0.36, 1],
+                  delay: i * 0.35,
+                }}
+                onAnimationComplete={() => onArrive(i)}
                 className={cn(
-                  "chrome-border flex flex-col items-center justify-center rounded-3xl py-5 shadow-[0_0_0_2px_var(--plum),6px_6px_0_var(--plum)] sm:py-7",
-                  main && "col-span-3 sm:col-span-1",
+                  "mx-auto w-full max-w-48",
+                  main && "col-span-3 max-w-52 sm:col-span-1 sm:max-w-48",
                 )}
-                style={{ "--tile": palette[tone] } as CSSProperties}
               >
-                <span
-                  className={cn(
-                    "font-numeric y2k-type leading-none font-black tabular-nums",
-                    main
-                      ? "text-[clamp(4rem,22vw,7.5rem)] sm:text-[clamp(3rem,7vw,5.5rem)]"
-                      : "text-[clamp(2.25rem,11vw,5rem)] sm:text-[clamp(2.5rem,6vw,5rem)]",
-                  )}
-                >
-                  {/* "--" giữ chỗ trước khi JS chạy để layout không nhảy */}
-                  {left ? <RollingNumber value={pad(left[key])} /> : "--"}
-                </span>
-                <span className="mt-2 text-sm font-semibold sm:text-base">
-                  {label}
-                </span>
-              </div>
+                <TrayBearer gender={gender} index={i}>
+                  <span
+                    className={cn(
+                      "font-numeric y2k-type leading-none font-black tabular-nums",
+                      // Số 3 chữ số (ngày) cần nhỏ hơn để vừa nắp mâm
+                      left && left[key] >= 100
+                        ? "text-[22cqw]"
+                        : "text-[28cqw]",
+                    )}
+                  >
+                    {/* "--" giữ chỗ trước khi JS chạy để layout không nhảy */}
+                    {left ? (
+                      <TrayNumber value={left[key]} arrived={arrived[i]} />
+                    ) : (
+                      "--"
+                    )}
+                  </span>
+                  <span className="text-[8cqw] font-semibold">{label}</span>
+                </TrayBearer>
+              </motion.div>
             ))}
           </div>
         )}

@@ -26,14 +26,14 @@ export const defaultFloaters: Floater[] = [
     kind: "heart",
     position: [3.1, -1.5, -0.5],
     scale: 0.55,
-    color: palette.bubblegum,
+    color: palette.lixi,
     speed: 1.1,
   },
   {
     kind: "heart",
     position: [2.4, 2.1, -2],
     scale: 0.4,
-    color: palette.lilac,
+    color: palette.bubblegum,
     speed: 1.7,
   },
   {

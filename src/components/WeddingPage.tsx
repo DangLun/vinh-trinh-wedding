@@ -1,3 +1,5 @@
+import FallingPetals from "@/components/effects/FallingPetals";
+import PhotoLine from "@/components/effects/PhotoLine";
 import PageBackdrop from "@/components/effects/PageBackdrop";
 import HangingPhotos from "@/components/effects/HangingPhotos";
 import Countdown from "@/components/sections/Countdown";
@@ -17,10 +19,13 @@ export default function WeddingPage({ guestName }: { guestName?: string }) {
       <Hero guestName={guestName} />
       <Marquee />
       <Countdown />
+      <PhotoLine line={0} />
       <LoveStory />
+      <PhotoLine line={1} />
       <EventInfo />
       <Gallery />
       <Footer />
+      <FallingPetals />
     </main>
   );
 }

@@ -1,17 +1,18 @@
 import Image from "next/image";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { wedding } from "@/config/wedding";
+import { AutoplayVideo } from "./AutoplayVideo";
 import type { GalleryItem } from "@/types/wedding";
 
 const tile = "mb-4 w-full break-inside-avoid rounded-xl";
 
 function GalleryTile({ item }: { item: GalleryItem }) {
   if (item.type === "video") {
-    // Tự phát cần muted + playsInline (iOS); aspect-ratio giữ chỗ để không nhảy layout.
+    // Chỉ phát khi trong màn hình (AutoplayVideo); aspect-ratio giữ chỗ để không nhảy layout.
     // Người bật giảm chuyển động thấy ảnh poster thay vì video tự chạy.
     return (
       <>
-        <video
+        <AutoplayVideo
           src={item.src}
           poster={item.poster}
           aria-label={item.alt}
@@ -19,10 +20,6 @@ function GalleryTile({ item }: { item: GalleryItem }) {
           height={item.height}
           style={{ aspectRatio: `${item.width} / ${item.height}` }}
           className={`${tile} h-auto object-cover motion-reduce:hidden`}
-          autoPlay
-          muted
-          loop
-          playsInline
           preload="metadata"
         />
         <Image

@@ -9,17 +9,15 @@ import {
   useTransform,
   useVelocity,
 } from "motion/react";
-import Image from "next/image";
-import { palette } from "@/config/theme";
-import { wedding } from "@/config/wedding";
+import {
+  garlandPhotos,
+  HangingPolaroid,
+  PHOTOS_PER_LINE,
+  Thread,
+} from "@/components/ui/Garland";
+import { MaiFlower } from "@/components/ui/MaiFlower";
 import { cn } from "@/lib/cn";
 import type { GalleryImage } from "@/types/wedding";
-
-const PER_SIDE = 5;
-
-const photos = wedding.gallery.filter(
-  (item): item is GalleryImage => item.type === "image",
-);
 
 type Side = "left" | "right";
 
@@ -28,41 +26,54 @@ type Side = "left" | "right";
  * Dây lượn qua lại nhẹ giữa các điểm kẹp; điểm kẹp dịch ra phía mép ngoài màn hình.
  */
 function clipPoints(side: Side) {
-  return Array.from({ length: PER_SIDE }, (_, i) => {
+  return Array.from({ length: PHOTOS_PER_LINE }, (_, i) => {
     const wobble = i % 2 === 0 ? -5 : 5;
     const x = side === "left" ? 42 + wobble : 58 - wobble;
-    return { x, y: ((i + 0.5) / PER_SIDE) * 1000 };
+    return { x, y: ((i + 0.5) / PHOTOS_PER_LINE) * 1000 };
   });
 }
 
-/** Đường dây cong võng từ mép trên đi qua các điểm kẹp, kết thúc ở kẹp cuối */
-function stringPath(points: { x: number; y: number }[], side: Side) {
+type Point = { x: number; y: number };
+/** Một đoạn cong Bézier bậc 3: điểm đầu, hai điểm điều khiển, điểm cuối */
+type Segment = [Point, Point, Point, Point];
+
+/** Các đoạn dây cong võng từ mép trên đi qua các điểm kẹp, kết thúc ở kẹp cuối */
+function stringSegments(points: Point[], side: Side): Segment[] {
   const top = side === "left" ? 42 : 58;
   const all = [{ x: top, y: 0 }, ...points];
-  return all.reduce((d, p, i) => {
-    if (i === 0) return `M ${p.x} ${p.y}`;
-    const prev = all[i - 1];
+  return all.slice(1).map((p, i) => {
+    const prev = all[i];
     const half = (p.y - prev.y) / 2;
-    return `${d} C ${prev.x} ${prev.y + half} ${p.x} ${p.y - half} ${p.x} ${p.y}`;
-  }, "");
+    return [
+      prev,
+      { x: prev.x, y: prev.y + half },
+      { x: p.x, y: p.y - half },
+      p,
+    ];
+  });
 }
 
-function HeartClip({ color }: { color: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 22"
-      className="absolute -top-3 left-1/2 z-10 w-7 -translate-x-1/2"
-    >
-      <path
-        d="M12 21s-7.5-4.6-9.6-9.3C1 8.4 3 5 6.4 5c2 0 3.6 1.1 4.6 2.7C12 6.1 13.6 5 15.6 5 19 5 21 8.4 19.6 11.7 17.5 16.4 12 21 12 21z"
-        fill={color}
-        stroke={palette.plum}
-        strokeWidth={1.6}
-        strokeLinejoin="round"
-      />
-    </svg>
+function stringPath(segments: Segment[]) {
+  return segments.reduce(
+    (d, [, c1, c2, p]) =>
+      `${d} C ${c1.x} ${c1.y} ${c2.x} ${c2.y} ${p.x} ${p.y}`,
+    `M ${segments[0][0].x} ${segments[0][0].y}`,
   );
 }
+
+/** Điểm trên đoạn Bézier tại t ∈ [0,1] (dùng để kết hoa mai đúng lên dây) */
+function pointAt([p0, p1, p2, p3]: Segment, t: number): Point {
+  const u = 1 - t;
+  const f = (a: number, b: number, c: number, d: number) =>
+    u * u * u * a + 3 * u * u * t * b + 3 * u * t * t * c + t * t * t * d;
+  return {
+    x: f(p0.x, p1.x, p2.x, p3.x),
+    y: f(p0.y, p1.y, p2.y, p3.y),
+  };
+}
+
+// Kết mai ở phần dây hở dưới mỗi ảnh (nửa trên đoạn dây bị ảnh che): một chùm to, một bông nhỏ
+const BLOSSOM_AT = [0.66, 0.86];
 
 function HangingPhoto({
   img,
@@ -94,29 +105,7 @@ function HangingPhoto({
         rotate,
       }}
     >
-      <div
-        className={cn("origin-top", !still && "animate-sway")}
-        // Mỗi ảnh đung đưa một nhịp riêng để không đồng loạt như máy
-        style={{
-          animationDuration: `${3.2 + (index % 3) * 0.7}s`,
-          animationDelay: `${-index * 0.9}s`,
-        }}
-      >
-        <HeartClip
-          color={index % 2 === 0 ? palette.bubblegum : palette.lilac}
-        />
-        <div className="ring-plum bg-white p-2.5 pb-9 shadow-[5px_5px_0_var(--plum)] ring-2">
-          <div className="relative aspect-[4/5] overflow-hidden">
-            <Image
-              src={img.src}
-              alt=""
-              fill
-              sizes="256px"
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </div>
+      <HangingPolaroid img={img} index={index} sizes="256px" still={still} />
     </motion.div>
   );
 }
@@ -133,6 +122,11 @@ function Garland({
   still: boolean;
 }) {
   const points = clipPoints(side);
+  const segments = stringSegments(points, side);
+  const blossoms = segments.flatMap((seg) =>
+    BLOSSOM_AT.map((t) => pointAt(seg, t)),
+  );
+  const d = stringPath(segments);
   return (
     <div
       className={cn(
@@ -145,15 +139,25 @@ function Garland({
         preserveAspectRatio="none"
         className="absolute inset-0 h-full w-full overflow-visible"
       >
-        <path
-          d={stringPath(points, side)}
-          fill="none"
-          stroke={palette.plum}
-          strokeOpacity={0.55}
-          strokeWidth={1.5}
-          vectorEffect="non-scaling-stroke"
-        />
+        <Thread d={d} />
       </svg>
+      {blossoms.map((p, i) => (
+        <svg
+          key={i}
+          viewBox="0 0 24 24"
+          className={cn(
+            "absolute -translate-x-1/2 -translate-y-1/2",
+            i % 2 === 0 ? "size-8" : "size-6",
+          )}
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y / 10}%`,
+            rotate: `${i * 37}deg`,
+          }}
+        >
+          <MaiFlower />
+        </svg>
+      ))}
       {items.map((img, i) => (
         <HangingPhoto
           key={img.src}
@@ -170,8 +174,8 @@ function Garland({
 }
 
 /**
- * Hai sợi dây treo ảnh polaroid chạy dọc hai lề (chỉ màn hình ≥1400px),
- * bắt đầu ngay dưới Hero. Ảnh đung đưa nhẹ; cuộn nhanh thì lắc mạnh rồi dừng dần.
+ * Hai sợi dây tơ hồng kết hoa mai treo ảnh polaroid chạy dọc hai lề (chỉ màn hình ≥1400px),
+ * bắt đầu ngay dưới Hero. Màn hẹp hơn dùng PhotoLine (dây ngang) thay thế. Ảnh đung đưa nhẹ; cuộn nhanh thì lắc mạnh rồi dừng dần.
  */
 export default function HangingPhotos() {
   const still = !!useReducedMotion();
@@ -183,7 +187,7 @@ export default function HangingPhotos() {
   );
   const swing = useSpring(kick, { stiffness: 70, damping: 6, mass: 1 });
 
-  if (photos.length < PER_SIDE * 2) return null;
+  if (!garlandPhotos) return null;
 
   return (
     <div
@@ -192,13 +196,13 @@ export default function HangingPhotos() {
     >
       <Garland
         side="left"
-        items={photos.filter((_, i) => i % 2 === 0).slice(0, PER_SIDE)}
+        items={garlandPhotos[0]}
         swing={swing}
         still={still}
       />
       <Garland
         side="right"
-        items={photos.filter((_, i) => i % 2 === 1).slice(0, PER_SIDE)}
+        items={garlandPhotos[1]}
         swing={swing}
         still={still}
       />

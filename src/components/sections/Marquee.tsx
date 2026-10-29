@@ -11,7 +11,7 @@ function Track() {
         .map((text, i) => (
           <li key={i} className="flex items-center">
             <span className="px-6">{text}</span>
-            <span className="text-bubblegum">✦</span>
+            <span className="text-butter">✦</span>
           </li>
         ))}
     </ul>
@@ -24,7 +24,7 @@ export default function Marquee() {
     <div
       role="marquee"
       aria-label={wedding.marquee.join(", ")}
-      className="border-plum bg-butter font-display flex overflow-hidden border-y-2 py-3 text-base whitespace-nowrap sm:text-lg"
+      className="border-plum bg-lixi text-milk font-display flex overflow-hidden border-y-2 py-3 text-base whitespace-nowrap sm:text-lg"
     >
       <div aria-hidden className="flex">
         <Track />

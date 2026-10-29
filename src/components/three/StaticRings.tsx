@@ -1,4 +1,4 @@
-import { palette } from "@/config/theme";
+import { metals } from "@/config/theme";
 import { cn } from "@/lib/cn";
 
 /** Bản SVG tĩnh của cặp nhẫn: hiện khi đang tải 3D, máy yếu hoặc bật giảm chuyển động. */
@@ -18,9 +18,11 @@ export function StaticRings({ className }: { className?: string }) {
           x2="200"
           y2="180"
         >
-          <stop offset="0" stopColor={palette.blush} />
-          <stop offset="0.5" stopColor={palette.bubblegum} />
-          <stop offset="1" stopColor={palette.ice} />
+          {/* Sáng – tối – sáng xen kẽ để giả vệt phản chiếu kim loại */}
+          <stop offset="0" stopColor="#fff1ea" />
+          <stop offset="0.35" stopColor={metals.roseGold} />
+          <stop offset="0.6" stopColor="#9c5d4c" />
+          <stop offset="1" stopColor={metals.roseGold} />
         </linearGradient>
         <linearGradient
           id="ring-b"
@@ -30,9 +32,10 @@ export function StaticRings({ className }: { className?: string }) {
           x2="120"
           y2="180"
         >
-          <stop offset="0" stopColor={palette.mist} />
-          <stop offset="0.5" stopColor={palette.lilac} />
-          <stop offset="1" stopColor={palette.butter} />
+          <stop offset="0" stopColor="#fff6d6" />
+          <stop offset="0.35" stopColor={metals.gold} />
+          <stop offset="0.6" stopColor="#9a6a12" />
+          <stop offset="1" stopColor={metals.gold} />
         </linearGradient>
       </defs>
       <circle
@@ -41,7 +44,7 @@ export function StaticRings({ className }: { className?: string }) {
         r="70"
         fill="none"
         stroke="url(#ring-a)"
-        strokeWidth="22"
+        strokeWidth="16"
       />
       <circle
         cx="200"
@@ -49,14 +52,14 @@ export function StaticRings({ className }: { className?: string }) {
         r="70"
         fill="none"
         stroke="url(#ring-b)"
-        strokeWidth="22"
+        strokeWidth="16"
       />
       {/* Vẽ lại đoạn nhẫn hồng phía trên để nó đè lên nhẫn tím, tạo cảm giác lồng nhau */}
       <path
         d="M 160 42.6 A 70 70 0 0 1 190 100"
         fill="none"
         stroke="url(#ring-a)"
-        strokeWidth="22"
+        strokeWidth="16"
       />
     </svg>
   );

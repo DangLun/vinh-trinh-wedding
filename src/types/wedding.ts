@@ -19,6 +19,8 @@ export type StoryMilestone = {
   date: string;
   title: string;
   text: string;
+  /** Ảnh kỷ niệm của mốc (không bắt buộc), đặt trong public/images */
+  image?: { src: string; alt: string };
 };
 
 type GalleryMediaBase = {

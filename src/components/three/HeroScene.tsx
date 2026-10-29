@@ -20,8 +20,8 @@ export default function HeroScene({
   onRingsSelect,
   onReady,
 }: HeroSceneProps) {
-  // Máy tụt khung hình thì hạ độ phân giải
-  const [maxDpr, setMaxDpr] = useState(1.75);
+  // 1.5x đủ nét cho màn Retina; máy tụt khung hình thì hạ tiếp về 1x
+  const [maxDpr, setMaxDpr] = useState(1.5);
 
   return (
     <Canvas

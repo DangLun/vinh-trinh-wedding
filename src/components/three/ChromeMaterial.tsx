@@ -20,6 +20,21 @@ export function ChromeMaterial({
   );
 }
 
+/**
+ * Kim loại quý đánh bóng cho nhẫn: kim loại hoàn toàn, không phủ bóng, không ánh xà cừ
+ * (hai thứ đó làm bề mặt trông như nhựa). Độ nhám nhỏ để vệt sáng mềm như trang sức thật.
+ */
+export function MetalMaterial({ color }: { color: string }) {
+  return (
+    <meshPhysicalMaterial
+      color={color}
+      metalness={1}
+      roughness={0.16}
+      envMapIntensity={1.3}
+    />
+  );
+}
+
 export function BubbleMaterial({ color }: { color: string }) {
   return (
     <meshPhysicalMaterial

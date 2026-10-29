@@ -25,9 +25,9 @@ const SPARKLE_PATH =
   "M12 0 L14.6 9.4 L24 12 L14.6 14.6 L12 24 L9.4 14.6 L0 12 L9.4 9.4 Z";
 const TRAIL_COLORS = [
   palette.bubblegum,
-  palette.lilac,
-  palette.sky,
   palette.butter,
+  palette.lixi,
+  palette.sky,
 ];
 // Rải một ngôi sao mỗi TRAIL_SPACING px chuột đi được, tối đa TRAIL_PER_EVENT sao mỗi lần di
 const TRAIL_SPACING = 10;
