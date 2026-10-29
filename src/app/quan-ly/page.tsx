@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import QRCode from "qrcode";
 import { InviteActions } from "@/components/admin/InviteActions";
+import { sticker } from "@/components/ui/sticker";
+import { logout } from "./actions";
 import { siteUrl } from "@/config/site";
 import { palette } from "@/config/theme";
 import { coupleName, wedding } from "@/config/wedding";
@@ -14,7 +16,7 @@ import {
 } from "@/lib/guests";
 import type { GuestSide } from "@/types/guest";
 
-// Trang này được proxy.ts khoá bằng mật khẩu (biến môi trường ADMIN_PASSWORD)
+// Trang này được proxy.ts khoá: chưa đăng nhập thì chuyển sang /quan-ly/dang-nhap
 export const metadata: Metadata = {
   title: `Quản lý khách mời | ${coupleName}`,
   robots: { index: false, follow: false },
@@ -45,7 +47,20 @@ export default async function AdminPage() {
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 sm:px-8">
-      <h1 className="font-display text-4xl sm:text-5xl">Khách mời</h1>
+      <div className="flex items-start justify-between gap-4">
+        <h1 className="font-display text-4xl sm:text-5xl">Khách mời</h1>
+        <form action={logout}>
+          <button
+            type="submit"
+            className={sticker({
+              shadow: false,
+              className: "min-h-10 px-4 text-sm font-semibold",
+            })}
+          >
+            Đăng xuất
+          </button>
+        </form>
+      </div>
       <p className="mt-2">
         {guests.length} thiệp · {wedding.events.map((e) => e.title).join(" & ")}{" "}
         · link gửi dạng <code>{new URL("/m/", siteUrl).toString()}…</code>
