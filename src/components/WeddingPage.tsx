@@ -5,6 +5,7 @@ import Gallery from "@/components/sections/Gallery";
 import Hero from "@/components/sections/Hero";
 import LoveStory from "@/components/sections/LoveStory";
 import Marquee from "@/components/sections/Marquee";
+import { BackToTop } from "@/components/ui/BackToTop";
 import { guestEvents, inviteeLabel } from "@/lib/guests";
 import type { Guest } from "@/types/guest";
 
@@ -23,6 +24,7 @@ export default function WeddingPage({ guest }: { guest?: Guest }) {
       <EventInfo events={events} guestName={guest?.name} />
       <Gallery />
       <Footer guestName={guest?.name} />
+      <BackToTop />
     </main>
   );
 }

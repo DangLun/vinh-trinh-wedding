@@ -5,6 +5,7 @@ import { MaiFlower } from "@/components/ui/MaiFlower";
 import { palette } from "@/config/theme";
 import { couple, lunarOf, lunarYear } from "@/config/wedding";
 import { formatDotDate, formatWeekday } from "@/lib/date";
+import { HEART_INK } from "@/lib/heart-line";
 
 /** Kích thước chuẩn ảnh xem trước của Zalo / Facebook / Messenger */
 export const ogSize = { width: 1200, height: 630 };
@@ -16,7 +17,7 @@ const font = (file: string) =>
 const fonts = Promise.all([
   font("CormorantGaramond-Light.ttf"),
   font("CormorantGaramond-LightItalic.ttf"),
-  font("ImperialScript-Regular.ttf"),
+  font("Waterfall-Regular.ttf"),
   font("BeVietnamPro-SemiBold.ttf"),
 ]);
 
@@ -33,7 +34,9 @@ const blossoms: [number, number, number, number][] = [
  * Có `to` thì là thiệp riêng "Thân mời <tên>", không có thì là thiệp chung.
  */
 export async function inviteCard({ to, date }: { to?: string; date: string }) {
-  const [light, italic, imperial, beVietnam] = await fonts;
+  const [light, italic, waterfall, beVietnam] = await fonts;
+  // Cỡ tên; nét tim nối hai tên có kích thước theo cỡ này như SignatureNames trên trang (đơn vị em)
+  const nameSize = to ? 140 : 176;
   const lunar = lunarOf(date);
   return new ImageResponse(
     <div
@@ -98,27 +101,31 @@ export async function inviteCard({ to, date }: { to?: string; date: string }) {
               {to}
             </div>
           )}
+          {/* Tên kiểu chữ ký nối nét tim vàng, giống thiệp mời và Hero */}
           <div
             style={{
               display: "flex",
-              alignItems: "center",
-              fontFamily: "Imperial Script",
-              fontSize: to ? 132 : 164,
-              lineHeight: 1.1,
-              marginTop: to ? 4 : 10,
+              alignItems: "flex-end",
+              fontFamily: "Waterfall",
+              fontSize: nameSize,
+              lineHeight: 1,
+              marginTop: to ? 10 : 18,
             }}
           >
             {couple[0].name}
-            <span
+            <svg
+              viewBox="0 0 120 50"
+              width={nameSize * 1.5}
+              height={nameSize * 0.62}
+              fill={palette.gold}
               style={{
-                fontFamily: "Cormorant Italic",
-                fontSize: to ? 64 : 80,
-                color: palette.gold,
-                margin: "0 22px",
+                margin: `0 ${-nameSize * 0.06}px ${nameSize * 0.16}px`,
               }}
             >
-              &
-            </span>
+              {HEART_INK.map((d, i) => (
+                <path key={i} d={d} />
+              ))}
+            </svg>
             {couple[1].name}
           </div>
           <div
@@ -161,8 +168,8 @@ export async function inviteCard({ to, date }: { to?: string; date: string }) {
           style: "normal",
         },
         {
-          name: "Imperial Script",
-          data: imperial,
+          name: "Waterfall",
+          data: waterfall,
           weight: 400,
           style: "normal",
         },

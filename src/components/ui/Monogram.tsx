@@ -30,7 +30,7 @@ export function Monogram({
         fontSize={44}
       >
         {initials[0]}
-        {/* "&" bằng Cormorant nghiêng như ở tên cặp đôi (CoupleName) */}
+        {/* "&" bằng Cormorant nghiêng, nhỏ hơn chữ cái đầu */}
         <tspan
           dx={3}
           dy={-4}

@@ -10,8 +10,8 @@ import {
 } from "motion/react";
 import Image from "next/image";
 import { useRef } from "react";
-import { CoupleName } from "@/components/ui/CoupleName";
 import { MaiBranch } from "@/components/ui/MaiFlower";
+import { SignatureNames } from "@/components/ui/SignatureNames";
 import { palette } from "@/config/theme";
 import { lunarOf, lunarYear, wedding } from "@/config/wedding";
 import { cn } from "@/lib/cn";
@@ -167,7 +167,7 @@ export default function Hero({
               className="w-[min(62vw,19rem)] md:w-[min(30vw,22rem)]"
             />
             {/*
-             * Tên viết liền một khối, đè lên đáy khung vòm (phần ảnh đã tối dần).
+             * Tên kiểu chữ ký nối nét tim (như thiệp mời), đè lên đáy khung vòm (phần ảnh đã tối dần).
              * Vùng cắt nới 0.3em mỗi phía (padding + margin âm) để nét lượn của thư pháp
              * vươn ra ngoài khung chữ không bị cắt trong lúc "viết".
              */}
@@ -185,7 +185,7 @@ export default function Hero({
                   delay: 0.9,
                 }}
               >
-                <CoupleName />
+                <SignatureNames lineClassName="text-gold" />
               </motion.span>
             </motion.h1>
           </div>

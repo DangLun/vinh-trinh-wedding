@@ -17,7 +17,7 @@ export const wedding: WeddingConfig = {
       address: "Phường Tân An, TP. Cần Thơ",
     },
   },
-  hashtag: "#VinhTrinhForever",
+  hashtag: "#TrinhVinhForever",
   marquee: [
     "Trinh & Vinh",
     "Xuân Đinh Mùi",
