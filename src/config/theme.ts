@@ -1,54 +1,28 @@
 import type { CSSProperties } from "react";
 
 /**
- * Bảng màu "Xuân miền Tây × Valentine" (nền Pastel Y2K) — nguồn duy nhất cho CSS (qua biến --<tên>), 3D, confetti và SVG.
- * Ba lớp không khí: sáng sớm gió bấc se lạnh (sky, ice, mist, lilac), nắng Tết hoa mai (butter, cream),
- * ngọt ngào Valentine (bubblegum, blush, lixi, plum). Tên màu giữ nguyên để không phải sửa nơi dùng.
+ * Bảng màu "Sơn Mài & Ngà" — nguồn duy nhất cho CSS (qua biến --<tên>), 3D và SVG.
+ * Nền ngà như giấy thiệp; sơn then (đen sơn mài) cho Hero, phong bì, đếm ngược, footer;
+ * vàng lá chỉ dùng làm nét mảnh và chữ nhỏ; đỏ son là điểm nhấn duy nhất (5–10% trang).
  * Thêm màu mới ở đây rồi khai báo thêm trong @theme của globals.css để có class Tailwind.
  */
 export const palette = {
-  // Nền giấy ngà ấm
-  milk: "#fff8f1",
-  // Hồng hoa hồng Valentine
-  bubblegum: "#ff6b98",
-  // Tím sương sớm
-  lilac: "#b3a3f5",
-  // Xanh trời gió bấc
-  sky: "#9fd8f2",
-  // Vàng hoa mai
-  butter: "#ffd447",
-  // Đỏ rượu vang, màu chữ chính
-  plum: "#4a1530",
-  // Đỏ lì xì, chỉ dùng làm điểm nhấn
-  lixi: "#d92b43",
-  // Tông nhạt, dùng cho nền gradient
-  blush: "#ffd5de",
-  mist: "#e2dcfb",
-  ice: "#d8eff9",
-  cream: "#fff0bd",
-} as const;
-
-/**
- * Màu kim loại thật cho nhẫn 3D (phản xạ gốc F0 của vàng hồng và vàng 18K).
- * Không đưa vào CSS: kim loại chỉ "ra kim loại" khi có môi trường phản chiếu.
- */
-export const metals = {
-  roseGold: "#f2b8a2",
-  gold: "#ffcf6b",
-} as const;
-
-/** Màu nhân vật minh hoạ (đội bưng quả ở Countdown): áo dài nam xanh, nữ đỏ */
-export const figure = {
-  skin: "#ffdcc4",
-  maleAoDai: "#4f86e8",
-  maleTrim: "#2f5fb8",
-  femaleAoDai: "#d92b43",
-  femaleTrim: "#a81d33",
-  // Cô dâu chú rể (cuối "Chuyện tình mình")
-  suit: "#2c3a63",
-  suitTrim: "#1c2645",
-  dress: "#ffffff",
-  dressShade: "#f1e6f5",
+  // Nền chính, giấy ngà
+  ivory: "#faf6ee",
+  // Nền phụ, giấy dó / vỏ trứng sơn mài
+  paper: "#efe6d2",
+  // Sơn then: đen sơn mài
+  lacquer: "#14100d",
+  // Nâu cánh gián, lớp dưới của sơn mài
+  umber: "#3b2416",
+  // Vàng lá: nét mảnh, chữ nhỏ trên nền tối
+  gold: "#c9a24a",
+  // Vàng lá đậm: chữ vàng trên nền ngà (đủ tương phản)
+  goldDeep: "#8a6a2b",
+  // Đỏ son: điểm nhấn duy nhất (nút chính, dấu sáp, sợi chỉ, tráp)
+  son: "#9e1b1b",
+  // Chữ mực
+  ink: "#2a2522",
 } as const;
 
 export type PaletteColor = keyof typeof palette;

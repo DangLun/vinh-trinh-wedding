@@ -1,61 +1,64 @@
 import { Section, SectionHeading } from "@/components/ui/Section";
-import { sticker } from "@/components/ui/sticker";
-import { Ticket } from "@/components/ui/Ticket";
-import { palette } from "@/config/theme";
-import { coupleName, wedding } from "@/config/wedding";
+import { button } from "@/components/ui/button";
+import { coupleName, lunarYear, wedding } from "@/config/wedding";
 import { googleCalendarUrl } from "@/lib/calendar";
 import { cn } from "@/lib/cn";
 import { formatDotDate, formatTime, formatWeekday } from "@/lib/date";
 import type { WeddingEvent } from "@/types/wedding";
 
-// Mỗi vé một tông, xoay vòng nếu có nhiều sự kiện hơn
-const looks = [
-  {
-    surface: `linear-gradient(160deg, ${palette.cream}, ${palette.blush})`,
-    tilt: "sm:-rotate-[1.2deg]",
-  },
-  {
-    surface: `linear-gradient(160deg, ${palette.mist}, ${palette.ice})`,
-    tilt: "sm:rotate-[1.2deg]",
-  },
-];
-
-const action =
-  "inline-flex min-h-11 items-center gap-2 px-4 text-sm font-semibold transition-transform active:translate-y-px";
-
-function PinIcon() {
+/**
+ * Một lễ như tấm thiệp in: nền giấy dó, hai đường chỉ vàng lồng nhau, chữ canh giữa.
+ * Nút chính (đỏ son) là chỉ đường vì đó là việc khách cần làm vào đúng ngày.
+ */
+function EventCard({ event: e }: { event: WeddingEvent }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className="size-4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2.2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z" />
-      <circle cx="12" cy="9.5" r="2.5" />
-    </svg>
-  );
-}
+    <article className="bg-paper border-gold/60 h-full border p-2">
+      <div className="border-gold/40 flex h-full flex-col items-center border px-6 py-12 text-center sm:px-10">
+        <h3 className="font-serif text-4xl font-light sm:text-5xl">
+          {e.title}
+        </h3>
+        <p className="figures text-gold-deep mt-8 font-serif text-7xl leading-none font-light">
+          <time dateTime={e.time}>{formatTime(e.time)}</time>
+        </p>
+        <p className="mt-5 first-letter:uppercase">
+          {formatWeekday(e.time)}, {formatDotDate(e.time)}
+        </p>
+        {e.lunar && (
+          <p className="text-gold-deep mt-1 font-serif text-lg italic">
+            {e.lunar}, {lunarYear}
+          </p>
+        )}
 
-function CalendarIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="size-4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2.2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <rect x="3.5" y="5" width="17" height="15" rx="3" />
-      <path d="M3.5 10h17M8 3v4M16 3v4" />
-    </svg>
+        <span aria-hidden className="bg-gold/60 my-8 h-px w-12" />
+
+        <p className="font-normal">{e.place}</p>
+        <p className="text-ink/70 mt-1">{e.address}</p>
+
+        <div className="mt-auto flex flex-wrap justify-center gap-3 pt-10">
+          <a
+            href={e.mapUrl}
+            target="_blank"
+            rel="noreferrer"
+            className={button({ tone: "son" })}
+          >
+            Chỉ đường
+          </a>
+          <a
+            href={googleCalendarUrl({
+              title: `${e.title} ${coupleName}`,
+              start: e.time,
+              end: e.endTime,
+              location: `${e.place}, ${e.address}`,
+            })}
+            target="_blank"
+            rel="noreferrer"
+            className={button()}
+          >
+            Lưu vào lịch
+          </a>
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -69,71 +72,21 @@ export default function EventInfo({
 }) {
   return (
     <Section width="lg">
-      <SectionHeading>Hẹn {guestName ?? "bạn"} ngày vui</SectionHeading>
+      <SectionHeading className="text-center">
+        Hẹn {guestName ?? "bạn"} ngày vui
+      </SectionHeading>
       <ul
         className={cn(
-          "grid gap-10 sm:gap-x-14",
-          // Khách chỉ được mời một lễ: vé nằm giữa thay vì lệch trái
+          "grid gap-8 sm:gap-10",
+          // Khách chỉ được mời một lễ: thiệp nằm giữa thay vì lệch trái
           events.length > 1 ? "sm:grid-cols-2" : "mx-auto max-w-md",
         )}
       >
-        {events.map((e, i) => {
-          const look = looks[i % looks.length];
-          return (
-            <li key={e.title}>
-              <Ticket
-                surface={look.surface}
-                className={cn(
-                  "transition-transform duration-300 hover:rotate-0",
-                  look.tilt,
-                )}
-                stub={
-                  <>
-                    <a
-                      href={e.mapUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={sticker({ tone: "butter", className: action })}
-                    >
-                      <PinIcon />
-                      Chỉ đường
-                    </a>
-                    <a
-                      href={googleCalendarUrl({
-                        title: `${e.title} ${coupleName}`,
-                        start: e.time,
-                        end: e.endTime,
-                        location: `${e.place}, ${e.address}`,
-                      })}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={sticker({ shadow: false, className: action })}
-                    >
-                      <CalendarIcon />
-                      Lưu vào lịch
-                    </a>
-                  </>
-                }
-              >
-                <article>
-                  <h3 className="font-display text-2xl sm:text-3xl">
-                    {e.title}
-                  </h3>
-                  <p className="font-numeric y2k-type mt-3 text-6xl leading-none font-black tabular-nums sm:text-7xl">
-                    <time dateTime={e.time}>{formatTime(e.time)}</time>
-                  </p>
-                  <p className="mt-3 font-semibold first-letter:uppercase">
-                    {formatWeekday(e.time)}, {formatDotDate(e.time)}
-                  </p>
-                  <div className="mt-6">
-                    <p className="font-semibold">{e.place}</p>
-                    <p className="text-plum/75">{e.address}</p>
-                  </div>
-                </article>
-              </Ticket>
-            </li>
-          );
-        })}
+        {events.map((e) => (
+          <li key={e.id}>
+            <EventCard event={e} />
+          </li>
+        ))}
       </ul>
     </Section>
   );

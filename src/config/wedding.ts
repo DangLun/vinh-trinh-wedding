@@ -7,7 +7,18 @@ export const wedding: WeddingConfig = {
   groom: { name: "Vinh", fullName: "Nguyễn Văn Vinh" },
   bride: { name: "Trinh", fullName: "Trần Thị Trinh" },
   hashtag: "#VinhTrinhForever",
-  marquee: ["TEAM INH INH", "VALENTINE", "VINH ♥ TRINH", "CƯỚI ĐẦU XUÂN"],
+  marquee: [
+    "Vinh & Trinh",
+    "Xuân Đinh Mùi",
+    "Lễ Vu Quy",
+    "Lễ Tân Hôn",
+    "Mười bốn tháng Hai",
+  ],
+  // Đang dùng ảnh mẫu trong album, thay bằng ảnh cưới thật (ảnh dọc, khoảng 3:4)
+  heroImage: {
+    src: "/images/gallery/sample/02.webp",
+    alt: "Cô dâu trong nắng chiều",
+  },
   // ISO 8601, giờ Việt Nam
   date: "2027-02-14T08:00:00+07:00",
   events: [
@@ -15,6 +26,7 @@ export const wedding: WeddingConfig = {
       id: "vu-quy",
       title: "Lễ Vu Quy",
       time: "2027-02-13T08:00:00+07:00",
+      lunar: "Mùng 8 tháng Giêng",
       place: "Tư gia nhà gái",
       address: "Địa chỉ nhà gái",
       mapUrl: "https://maps.google.com/?q=",
@@ -23,6 +35,7 @@ export const wedding: WeddingConfig = {
       id: "tan-hon",
       title: "Lễ Tân Hôn",
       time: "2027-02-14T08:00:00+07:00",
+      lunar: "Mùng 9 tháng Giêng",
       place: "Tư gia nhà trai",
       address: "Địa chỉ nhà trai",
       mapUrl: "https://maps.google.com/?q=",
@@ -38,3 +51,10 @@ export const wedding: WeddingConfig = {
 
 /** "Vinh & Trinh" */
 export const coupleName = `${wedding.groom.name} & ${wedding.bride.name}`;
+
+/** Năm âm lịch của đám cưới (Tết Đinh Mùi là 6/2/2027) */
+export const lunarYear = "Xuân Đinh Mùi";
+
+/** Ngày âm lịch của một mốc giờ, lấy từ lễ trùng thời điểm đó */
+export const lunarOf = (iso: string) =>
+  wedding.events.find((e) => e.time === iso)?.lunar;

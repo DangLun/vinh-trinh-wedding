@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import { useActionState, useState } from "react";
 import { login, type LoginState } from "@/app/quan-ly/actions";
-import { sticker } from "@/components/ui/sticker";
+import { button } from "@/components/ui/button";
 import { coupleName } from "@/config/wedding";
 
 const initial: LoginState = { attempt: 0 };
@@ -42,9 +42,9 @@ export function LoginForm() {
         state.attempt ? { x: [0, -12, 12, -8, 8, -4, 0] } : { opacity: 1, y: 0 }
       }
       transition={{ duration: state.attempt ? 0.45 : 0.5 }}
-      className="border-plum relative z-10 rounded-3xl border-2 bg-white px-6 pt-8 pb-6 shadow-[6px_6px_0_var(--plum)] sm:px-8"
+      className="bg-ivory text-ink border-gold/60 relative z-10 border px-6 pt-10 pb-8 sm:px-10"
     >
-      <h1 className="font-display text-center text-3xl leading-tight text-balance">
+      <h1 className="text-center font-serif text-4xl leading-tight font-light text-balance">
         Góc nhỏ của cô dâu chú rể
       </h1>
       <p className="mt-2 text-center text-sm opacity-75">
@@ -65,13 +65,13 @@ export function LoginForm() {
           placeholder="Mật khẩu"
           aria-invalid={!!state.error}
           aria-describedby="login-error"
-          className="border-plum bg-milk focus:ring-lilac/60 w-full rounded-full border-2 py-3 pr-14 pl-5 text-base outline-none focus:ring-4"
+          className="border-ink/30 focus:border-gold-deep w-full border-b bg-transparent py-3 pr-14 pl-1 text-base outline-none"
         />
         <button
           type="button"
           onClick={() => setShow((s) => !s)}
           aria-label={show ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-          className="hover:bg-blush absolute top-1/2 right-1.5 grid size-10 -translate-y-1/2 place-items-center rounded-full"
+          className="hover:bg-paper absolute top-1/2 right-1.5 grid size-10 -translate-y-1/2 place-items-center rounded-full"
         >
           <EyeIcon open={show} />
         </button>
@@ -80,7 +80,7 @@ export function LoginForm() {
       <p
         id="login-error"
         aria-live="polite"
-        className="text-lixi mt-3 min-h-5 text-center text-sm font-semibold"
+        className="text-son mt-3 min-h-5 text-center text-sm font-normal"
       >
         {state.error}
       </p>
@@ -88,17 +88,16 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className={sticker({
-          tone: "bubblegum",
-          className:
-            "mt-2 min-h-12 w-full text-base font-semibold transition-transform active:translate-y-px disabled:opacity-60",
+        className={button({
+          tone: "son",
+          className: "mt-2 w-full disabled:opacity-60",
         })}
       >
-        {pending ? "Đang mở cửa…" : "Vào quản lý ✦"}
+        {pending ? "Đang mở cửa…" : "Vào quản lý"}
       </button>
 
       <p className="mt-5 text-center text-xs opacity-60">
-        Trang riêng của {coupleName}, khách mời không cần vào đây 💌
+        Trang riêng của {coupleName}, khách mời không cần vào đây
       </p>
     </motion.form>
   );
