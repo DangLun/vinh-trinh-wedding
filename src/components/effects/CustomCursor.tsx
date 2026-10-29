@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AnimatePresence,
   motion,
   useMotionValue,
   useReducedMotion,
@@ -9,7 +10,6 @@ import {
 import {
   type CSSProperties,
   useEffect,
-  useRef,
   useState,
   useSyncExternalStore,
 } from "react";
@@ -18,23 +18,17 @@ import {
   CURSOR_EVENT,
   type CursorVariant,
   INTERACTIVE_SELECTOR,
+  VIEW_SELECTOR,
 } from "@/lib/cursor";
 import { hasFinePointer, subscribeFinePointer } from "@/lib/device";
+import { easeLuxe } from "@/lib/motion";
 
-const SPARKLE_PATH =
-  "M12 0 L14.6 9.4 L24 12 L14.6 14.6 L12 24 L9.4 14.6 L0 12 L9.4 9.4 Z";
-const TRAIL_COLORS = [
-  palette.bubblegum,
-  palette.butter,
-  palette.lixi,
-  palette.sky,
-];
-// Rải một ngôi sao mỗi TRAIL_SPACING px chuột đi được, tối đa TRAIL_PER_EVENT sao mỗi lần di
-const TRAIL_SPACING = 10;
-const TRAIL_PER_EVENT = 6;
-const TRAIL_SCATTER = 10;
-const STAR_SIZE = 22;
+const DOT_SIZE = 6;
 const RING_SIZE = 40;
+// Cỡ vòng (so với RING_SIZE) theo dạng con trỏ
+const RING_SCALE = { default: 1, hover: 1.5, view: 2 } as const;
+
+type Mode = keyof typeof RING_SCALE;
 
 // Khối vuông có tâm đặt ở gốc toạ độ, để x/y của motion trỏ đúng vào tâm
 const box = (size: number): CSSProperties => ({
@@ -45,19 +39,11 @@ const box = (size: number): CSSProperties => ({
   height: size,
 });
 
-// Viền ánh xà cừ: nền conic + mask khoét rỗng giữa
-const ringMask = `radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px))`;
-const ringStyle: CSSProperties = {
-  width: "100%",
-  height: "100%",
-  borderRadius: "9999px",
-  background: `conic-gradient(${palette.bubblegum}, ${palette.lilac}, ${palette.sky}, ${palette.butter}, ${palette.bubblegum})`,
-  WebkitMask: ringMask,
-  mask: ringMask,
-};
-const TRAIL_MAX = 90;
-
-/** Con trỏ Y2K: sao 4 cánh + vòng bong bóng đuổi theo + vệt sao. Chỉ bật với chuột thật. */
+/**
+ * Con trỏ: chấm nhỏ + vòng chỉ mảnh trễ nhịp theo sau. Trộn kiểu "difference" nên
+ * thấy được trên cả nền ngà lẫn sơn mài. Rê lên ảnh thì vòng nở ra kèm chữ "Xem".
+ * Chỉ bật với chuột thật; style inline, không phụ thuộc CSS toàn cục.
+ */
 export default function CustomCursor() {
   const fine = useSyncExternalStore(
     subscribeFinePointer,
@@ -67,122 +53,46 @@ export default function CustomCursor() {
   return fine ? <Cursor /> : null;
 }
 
-const SVG_NS = "http://www.w3.org/2000/svg";
-
-// Vệt sao dùng style inline + Web Animations API, không phụ thuộc CSS toàn cục
-function spawnSparkle(layer: HTMLElement, x: number, y: number) {
-  if (layer.childElementCount >= TRAIL_MAX) layer.firstElementChild?.remove();
-  const size = 8 + Math.random() * 8;
-  const drift = (Math.random() - 0.5) * 40;
-
-  const svg = document.createElementNS(SVG_NS, "svg");
-  svg.setAttribute("viewBox", "0 0 24 24");
-  svg.setAttribute("width", String(size));
-  svg.setAttribute("height", String(size));
-  svg.setAttribute(
-    "fill",
-    TRAIL_COLORS[Math.floor(Math.random() * TRAIL_COLORS.length)],
-  );
-  Object.assign(svg.style, {
-    position: "fixed",
-    left: `${x - size / 2}px`,
-    top: `${y - size / 2}px`,
-    pointerEvents: "none",
-  });
-  const path = document.createElementNS(SVG_NS, "path");
-  path.setAttribute("d", SPARKLE_PATH);
-  svg.appendChild(path);
-  layer.appendChild(svg);
-
-  svg
-    .animate(
-      [
-        { opacity: 1, transform: "scale(1) rotate(0deg)" },
-        {
-          opacity: 0,
-          transform: `translate(${drift}px, 24px) scale(0) rotate(90deg)`,
-        },
-      ],
-      {
-        duration: 800 + Math.random() * 300,
-        easing: "ease-out",
-        fill: "forwards",
-      },
-    )
-    .finished.then(
-      () => svg.remove(),
-      () => svg.remove(),
-    );
-}
-
 function Cursor() {
   const still = useReducedMotion();
   const x = useMotionValue(-100);
   const y = useMotionValue(-100);
-  // Vòng bong bóng trễ nhịp theo lò xo; giảm chuyển động thì bám sát luôn
-  const spring = still
+  // Vòng đuổi theo chậm, không nảy; giảm chuyển động thì bám sát luôn
+  const follow = still
     ? { stiffness: 10_000, damping: 500 }
-    : { stiffness: 320, damping: 26, mass: 0.6 };
-  const ringX = useSpring(x, spring);
-  const ringY = useSpring(y, spring);
+    : { stiffness: 170, damping: 28, mass: 0.7 };
+  const ringX = useSpring(x, follow);
+  const ringY = useSpring(y, follow);
 
   const [visible, setVisible] = useState(false);
   const [pressed, setPressed] = useState(false);
-  const [domHover, setDomHover] = useState(false);
+  const [domMode, setDomMode] = useState<Mode>("default");
   const [externalHover, setExternalHover] = useState(false);
-  const hover = domHover || externalHover;
-  const trail = useRef<HTMLDivElement>(null);
+  const mode: Mode = externalHover && domMode === "default" ? "hover" : domMode;
 
   useEffect(() => {
     const root = document.documentElement;
     root.classList.add("custom-cursor");
-    // Điểm rải sao gần nhất; null = chưa có (vừa vào trang/quay lại cửa sổ)
-    let last: { x: number; y: number } | null = null;
-
-    const sprinkle = (layer: HTMLElement, tx: number, ty: number) => {
-      if (!last) {
-        last = { x: tx, y: ty };
-        return;
-      }
-      const dx = tx - last.x;
-      const dy = ty - last.y;
-      const steps = Math.min(
-        TRAIL_PER_EVENT,
-        Math.floor(Math.hypot(dx, dy) / TRAIL_SPACING),
-      );
-      if (steps === 0) return;
-      // Nội suy dọc đường đi để vệt không đứt quãng khi rê nhanh
-      for (let i = 1; i <= steps; i++) {
-        const t = i / steps;
-        const jitter = () => (Math.random() - 0.5) * TRAIL_SCATTER * 2;
-        spawnSparkle(
-          layer,
-          last.x + dx * t + jitter(),
-          last.y + dy * t + jitter(),
-        );
-      }
-      last = { x: tx, y: ty };
-    };
 
     const move = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
       x.set(e.clientX);
       y.set(e.clientY);
       setVisible(true);
-      if (!still && trail.current) {
-        sprinkle(trail.current, e.clientX, e.clientY);
-      }
     };
-    const over = (e: PointerEvent) =>
-      setDomHover(
-        !!(e.target as Element | null)?.closest?.(INTERACTIVE_SELECTOR),
+    const over = (e: PointerEvent) => {
+      const el = e.target as Element | null;
+      setDomMode(
+        el?.closest?.(VIEW_SELECTOR)
+          ? "view"
+          : el?.closest?.(INTERACTIVE_SELECTOR)
+            ? "hover"
+            : "default",
       );
+    };
     const down = () => setPressed(true);
     const up = () => setPressed(false);
-    const leave = () => {
-      setVisible(false);
-      last = null;
-    };
+    const leave = () => setVisible(false);
     const external = (e: Event) =>
       setExternalHover((e as CustomEvent<CursorVariant>).detail === "hover");
 
@@ -201,9 +111,10 @@ function Cursor() {
       window.removeEventListener(CURSOR_EVENT, external);
       root.removeEventListener("pointerleave", leave);
     };
-  }, [still, x, y]);
+  }, [x, y]);
 
-  const press = pressed ? 0.8 : 1;
+  const press = pressed ? 0.85 : 1;
+  const transition = { duration: 0.5, ease: easeLuxe };
 
   return (
     <div
@@ -213,43 +124,56 @@ function Cursor() {
         inset: 0,
         zIndex: 100,
         pointerEvents: "none",
+        mixBlendMode: "difference",
         opacity: visible ? 1 : 0,
-        transition: "opacity 200ms",
+        transition: "opacity 300ms",
       }}
     >
-      <div ref={trail} />
-
-      {/* Vòng bong bóng ánh xà cừ */}
       <motion.div style={{ ...box(RING_SIZE), x: ringX, y: ringY }}>
         <motion.div
-          style={ringStyle}
-          animate={{ scale: (hover ? 1.6 : 1) * press }}
-          transition={{ type: "spring", stiffness: 400, damping: 22 }}
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: "9999px",
+            border: `1px solid ${palette.ivory}`,
+          }}
+          animate={{ scale: RING_SCALE[mode] * press }}
+          transition={transition}
         />
+        <AnimatePresence>
+          {mode === "view" && (
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={transition}
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "grid",
+                placeItems: "center",
+                color: palette.ivory,
+                fontSize: 11,
+                letterSpacing: "0.14em",
+              }}
+            >
+              Xem
+            </motion.span>
+          )}
+        </AnimatePresence>
       </motion.div>
 
-      {/* Sao 4 cánh — điểm trỏ chính xác ở tâm */}
-      <motion.div style={{ ...box(STAR_SIZE), x, y }}>
-        <motion.svg
-          viewBox="0 0 24 24"
-          width={STAR_SIZE}
-          height={STAR_SIZE}
-          overflow="visible"
-          animate={{
-            rotate: hover ? 45 : 0,
-            scale: (hover ? 0.85 : 1) * press,
-            color: hover ? palette.bubblegum : palette.plum,
+      <motion.div style={{ ...box(DOT_SIZE), x, y }}>
+        <motion.div
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: "9999px",
+            background: palette.ivory,
           }}
-          transition={{ type: "spring", stiffness: 500, damping: 25 }}
-        >
-          <path
-            d={SPARKLE_PATH}
-            fill="currentColor"
-            stroke="#fff"
-            strokeWidth={1.5}
-            strokeLinejoin="round"
-          />
-        </motion.svg>
+          animate={{ scale: mode === "default" ? press : 0 }}
+          transition={transition}
+        />
       </motion.div>
     </div>
   );

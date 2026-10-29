@@ -15,3 +15,6 @@ export function setCursorVariant(variant: CursorVariant) {
     new CustomEvent<CursorVariant>(CURSOR_EVENT, { detail: variant }),
   );
 }
+
+/** Ảnh/video xem được → con trỏ nở vòng và hiện chữ "Xem" */
+export const VIEW_SELECTOR = "img, video, [data-cursor='view']";

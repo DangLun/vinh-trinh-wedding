@@ -7,12 +7,12 @@ import {
   useReducedMotion,
 } from "motion/react";
 import { useEffect, useState } from "react";
-import { GradientMesh } from "@/components/ui/GradientMesh";
-import { sticker } from "@/components/ui/sticker";
+import { button } from "@/components/ui/button";
+import { CoupleName } from "@/components/ui/CoupleName";
+import { Monogram } from "@/components/ui/Monogram";
 import { palette } from "@/config/theme";
-import { coupleName } from "@/config/wedding";
 import { cn } from "@/lib/cn";
-import { heartBurst } from "@/lib/confetti";
+import { easeLuxe } from "@/lib/motion";
 
 type Phase = "sealed" | "opening" | "letter" | "closed";
 
@@ -26,14 +26,9 @@ export type EnvelopeProps = {
   events: { title: string; when: string }[];
 };
 
-const HEART =
-  "M12 21s-7.5-4.6-9.6-9.3C1 8.4 3 5 6.4 5c2 0 3.6 1.1 4.6 2.7C12 6.1 13.6 5 15.6 5 19 5 21 8.4 19.6 11.7 17.5 16.4 12 21 12 21z";
+const curtain = [0.76, 0, 0.24, 1] as const;
 
-// Đỏ sơn mài đậm hơn lixi một chút cho thân phong bì có chiều sâu
-const ENVELOPE_BACK = "#b81f37";
-const FLAP = "#e8495d";
-
-/** Phong bì đỏ dán sáp tim; chạm con dấu thì nắp lật, thiệp trồi lên */
+/** Phong bì sơn then viền chỉ vàng, lót đỏ son; dấu sáp son in chữ lồng V & T là nút mở */
 function EnvelopeArt({
   to,
   opening,
@@ -43,42 +38,41 @@ function EnvelopeArt({
   opening: boolean;
   onOpen: () => void;
 }) {
-  const stroke = {
-    stroke: palette.plum,
-    strokeWidth: 3,
-    strokeLinejoin: "round",
-  } as const;
+  const edge = { stroke: palette.gold, strokeWidth: 1 } as const;
   return (
     <motion.div
-      exit={{ y: 120, opacity: 0, transition: { duration: 0.45 } }}
-      className="relative w-[min(86vw,24rem)]"
+      exit={{ opacity: 0, transition: { duration: 0.6 } }}
+      className="relative w-[min(86vw,26rem)]"
     >
-      <p className="font-display mb-8 text-center text-3xl">Gửi {to}</p>
+      <p className="text-gold text-center text-xs tracking-[0.18em]">Gửi</p>
+      <p className="text-ivory mt-1 mb-10 text-center font-serif text-3xl font-light italic">
+        {to}
+      </p>
 
       <div className="relative aspect-[3/2]">
-        {/* Thân sau */}
+        {/* Thân sau: mặt trong lót đỏ son, lộ ra khi nắp lật */}
         <div
-          className="border-plum absolute inset-0 rounded-2xl border-2 shadow-[6px_6px_0_var(--plum)]"
-          style={{ background: ENVELOPE_BACK }}
+          className="border-gold/60 absolute inset-0 border"
+          style={{ background: palette.son }}
         />
-        {/* Tấm thiệp bên trong: trồi lên khi mở */}
+        {/* Tấm thiệp ngà bên trong: trồi lên khi mở */}
         <motion.div
-          className="border-plum bg-milk absolute inset-x-[8%] top-[8%] bottom-[10%] z-10 grid place-items-center rounded-xl border-2"
+          className="bg-ivory absolute inset-x-[7%] top-[7%] bottom-[9%] z-10 grid place-items-center"
           initial={false}
-          animate={{ y: opening ? "-48%" : "0%" }}
-          transition={{ delay: 0.35, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          animate={{ y: opening ? "-46%" : "0%" }}
+          transition={{ delay: 0.5, duration: 1, ease: easeLuxe }}
         >
           {/* Ẩn chữ khi phong bì còn dán để chữ không lấp ló qua mép nắp */}
           <span
             className={cn(
-              "font-display y2k-type -mt-[30%] text-3xl transition-opacity duration-300",
+              "text-ink -mt-[30%] text-4xl transition-opacity duration-700",
               opening ? "opacity-100" : "opacity-0",
             )}
           >
-            {coupleName}
+            <CoupleName ampClassName="text-gold-deep" />
           </span>
         </motion.div>
-        {/* Túi trước hình chữ V */}
+        {/* Túi trước hình chữ V, sơn then */}
         <svg
           viewBox="0 0 300 200"
           preserveAspectRatio="none"
@@ -86,9 +80,10 @@ function EnvelopeArt({
           aria-hidden
         >
           <path
-            d="M2 70 L150 142 L298 70 L298 186 Q298 198 286 198 L14 198 Q2 198 2 186 Z"
-            fill={palette.lixi}
-            {...stroke}
+            d="M0.5 66 L150 140 L299.5 66 L299.5 199.5 L0.5 199.5 Z"
+            fill={palette.lacquer}
+            {...edge}
+            vectorEffect="non-scaling-stroke"
           />
         </svg>
         {/* Nắp: lật ngược lên khi mở, lúc đó lùi ra sau tấm thiệp */}
@@ -99,40 +94,38 @@ function EnvelopeArt({
           style={{ zIndex: opening ? 1 : 30, transformPerspective: 900 }}
           initial={false}
           animate={{ rotateX: opening ? 180 : 0 }}
-          transition={{ duration: 0.45, ease: "easeInOut" }}
+          transition={{ duration: 0.8, ease: curtain }}
           aria-hidden
         >
-          <path d="M2 2 L298 2 L150 126 Z" fill={FLAP} {...stroke} />
+          <path
+            d="M0.5 0.5 L299.5 0.5 L150 124 Z"
+            fill={palette.umber}
+            {...edge}
+            vectorEffect="non-scaling-stroke"
+          />
         </motion.svg>
-        {/* Con dấu sáp hình tim = nút mở */}
+        {/* Dấu sáp đỏ son = nút mở */}
         <motion.button
           type="button"
           autoFocus
           onClick={onOpen}
           aria-label="Mở thiệp mời"
-          className="border-plum absolute top-[62%] left-1/2 z-40 grid size-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 shadow-[3px_3px_0_var(--plum)]"
-          style={{ background: palette.butter }}
+          className="absolute top-[62%] left-1/2 z-40 grid size-20 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full shadow-[0_6px_18px_rgba(0,0,0,0.45)] transition-transform duration-500 hover:scale-[1.03]"
+          style={{
+            background: `radial-gradient(circle at 35% 30%, #b82a2a 0%, ${palette.son} 55%, #6e1212 100%)`,
+          }}
           initial={false}
-          animate={opening ? { scale: 0, opacity: 0 } : { scale: [1, 1.08, 1] }}
-          transition={
-            opening
-              ? { duration: 0.2 }
-              : { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
+          animate={
+            opening ? { scale: 0.6, opacity: 0 } : { scale: 1, opacity: 1 }
           }
+          transition={{ duration: 0.5, ease: easeLuxe }}
         >
-          <svg viewBox="0 0 24 22" className="w-8" aria-hidden>
-            <path
-              d={HEART}
-              fill={palette.lixi}
-              stroke={palette.plum}
-              strokeWidth={1.6}
-            />
-          </svg>
+          <Monogram color={palette.gold} className="size-16" />
         </motion.button>
       </div>
 
-      <p className="mt-8 text-center text-sm opacity-80">
-        Chạm vào con dấu để mở thiệp
+      <p className="text-ivory/55 mt-10 text-center text-sm">
+        Chạm vào dấu sáp để mở thiệp
       </p>
     </motion.div>
   );
@@ -147,48 +140,48 @@ function Letter({
 }: EnvelopeProps & { onEnter: () => void }) {
   return (
     <motion.article
-      initial={{ opacity: 0, y: 80, scale: 0.92 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ type: "spring", stiffness: 120, damping: 16 }}
-      className="border-plum relative w-[min(92vw,30rem)] rounded-3xl border-2 bg-white px-6 py-8 text-center shadow-[6px_6px_0_var(--plum)] sm:px-10"
+      initial={{ opacity: 0, y: 32 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1.2, ease: easeLuxe }}
+      className="bg-ivory text-ink border-gold/60 relative w-[min(92vw,32rem)] border p-2"
     >
-      <p className="font-display text-3xl">Gửi {to}</p>
-      <p className="mt-4 leading-relaxed">
-        {verb} <strong>{to}</strong> đến chung vui trong ngày cưới của
-      </p>
-      <p className="font-display y2k-type mt-2 text-5xl sm:text-6xl">
-        {coupleName}
-      </p>
-
-      <ul className="mt-6 space-y-2">
-        {events.map((e) => (
-          <li key={e.title}>
-            <strong>{e.title}</strong>
-            <span className="block text-sm sm:inline sm:text-base">
-              <span className="hidden sm:inline"> · </span>
-              {e.when}
-            </span>
-          </li>
-        ))}
-      </ul>
-
-      {note && (
-        <p className="bg-cream border-plum mt-6 rounded-2xl border-2 border-dashed px-4 py-3 italic">
-          “{note}”
+      <div className="border-gold/40 border px-6 py-12 text-center sm:px-12">
+        <p className="font-serif text-2xl font-light italic">Gửi {to}</p>
+        <p className="text-ink/80 mt-5 leading-relaxed">
+          {verb} {to} đến chung vui trong ngày cưới của
         </p>
-      )}
+        <p className="mt-4 text-6xl leading-tight sm:text-7xl">
+          <CoupleName ampClassName="text-gold-deep" />
+        </p>
 
-      <button
-        type="button"
-        autoFocus
-        onClick={onEnter}
-        className={sticker({
-          tone: "bubblegum",
-          className: "mt-7 min-h-12 px-7 text-base font-semibold",
-        })}
-      >
-        Mở thiệp ✦
-      </button>
+        <span aria-hidden className="bg-gold/60 mx-auto my-8 block h-px w-12" />
+
+        <ul className="space-y-4">
+          {events.map((e) => (
+            <li key={e.title}>
+              <p className="font-serif text-2xl">{e.title}</p>
+              <p className="text-ink/70 text-sm first-letter:uppercase">
+                {e.when}
+              </p>
+            </li>
+          ))}
+        </ul>
+
+        {note && (
+          <p className="text-gold-deep mt-8 font-serif text-xl italic">
+            “{note}”
+          </p>
+        )}
+
+        <button
+          type="button"
+          autoFocus
+          onClick={onEnter}
+          className={button({ tone: "son", className: "mt-10 px-10" })}
+        >
+          Vào xem thiệp
+        </button>
+      </div>
     </motion.article>
   );
 }
@@ -216,15 +209,11 @@ export default function Envelope(props: EnvelopeProps) {
   // Nắp lật + thiệp trồi lên xong thì chuyển sang thư mời
   useEffect(() => {
     if (phase !== "opening") return;
-    const id = setTimeout(() => setPhase("letter"), 1300);
+    const id = setTimeout(() => setPhase("letter"), 1800);
     return () => clearTimeout(id);
   }, [phase]);
 
   const open = () => setPhase(still ? "letter" : "opening");
-  const enter = () => {
-    setPhase("closed");
-    heartBurst();
-  };
 
   return (
     <MotionConfig reducedMotion="user">
@@ -237,13 +226,16 @@ export default function Envelope(props: EnvelopeProps) {
             aria-label={`Thiệp mời gửi ${props.to}`}
             // Lenis bỏ qua thao tác cuộn bên trong lớp này
             data-lenis-prevent
-            exit={{ opacity: 0, transition: { duration: 0.6 } }}
-            className="bg-milk fixed inset-0 isolate z-[60] grid place-items-center overflow-y-auto p-4"
+            exit={{ opacity: 0, transition: { duration: 1, ease: curtain } }}
+            className="lacquer fixed inset-0 isolate z-[60] grid place-items-center overflow-y-auto p-4"
           >
-            <GradientMesh />
             <AnimatePresence mode="wait">
               {phase === "letter" ? (
-                <Letter key="letter" {...props} onEnter={enter} />
+                <Letter
+                  key="letter"
+                  {...props}
+                  onEnter={() => setPhase("closed")}
+                />
               ) : (
                 <EnvelopeArt
                   key="envelope"

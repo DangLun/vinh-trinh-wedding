@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import QRCode from "qrcode";
 import { InviteActions } from "@/components/admin/InviteActions";
-import { sticker } from "@/components/ui/sticker";
+import { button } from "@/components/ui/button";
 import { logout } from "./actions";
 import { siteUrl } from "@/config/site";
 import { palette } from "@/config/theme";
@@ -39,7 +39,7 @@ export default async function AdminPage() {
         qr: await QRCode.toString(url, {
           type: "svg",
           margin: 1,
-          color: { dark: palette.plum, light: "#ffffff" },
+          color: { dark: palette.ink, light: palette.ivory },
         }),
       };
     }),
@@ -48,14 +48,13 @@ export default async function AdminPage() {
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 sm:px-8">
       <div className="flex items-start justify-between gap-4">
-        <h1 className="font-display text-4xl sm:text-5xl">Khách mời</h1>
+        <h1 className="font-serif text-5xl font-light sm:text-6xl">
+          Khách mời
+        </h1>
         <form action={logout}>
           <button
             type="submit"
-            className={sticker({
-              shadow: false,
-              className: "min-h-10 px-4 text-sm font-semibold",
-            })}
+            className={button({ className: "min-h-10 px-4" })}
           >
             Đăng xuất
           </button>
@@ -75,7 +74,7 @@ export default async function AdminPage() {
         if (list.length === 0) return null;
         return (
           <section key={side} className="mt-10">
-            <h2 className="font-display text-2xl">
+            <h2 className="font-serif text-3xl font-light">
               {sideLabel[side]}{" "}
               <span className="text-base opacity-60">({list.length})</span>
             </h2>
@@ -83,7 +82,7 @@ export default async function AdminPage() {
               {list.map((r) => (
                 <li
                   key={r.guest.code}
-                  className="border-plum flex min-w-0 gap-3 rounded-3xl border-2 bg-white p-4 shadow-[4px_4px_0_var(--plum)]"
+                  className="border-gold/50 bg-ivory flex min-w-0 gap-3 border p-4"
                 >
                   <div
                     className="size-20 shrink-0 sm:size-24 [&>svg]:size-full"
@@ -93,7 +92,7 @@ export default async function AdminPage() {
                     dangerouslySetInnerHTML={{ __html: r.qr }}
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="font-display text-xl">{r.label}</p>
+                    <p className="font-serif text-2xl">{r.label}</p>
                     <p className="text-sm">
                       {r.events.join(", ")}
                       {r.guest.formal && " · trang trọng"}

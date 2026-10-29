@@ -4,82 +4,27 @@
 /* Bảng màu nằm ở src/config/theme.ts, được gắn thành biến --<tên> trên <html> */
 
 @theme inline {
-  --color-milk: var(--milk);
-  --color-bubblegum: var(--bubblegum);
-  --color-lilac: var(--lilac);
-  --color-sky: var(--sky);
-  --color-butter: var(--butter);
-  --color-plum: var(--plum);
-  --color-blush: var(--blush);
-  --color-mist: var(--mist);
-  --color-ice: var(--ice);
-  --color-cream: var(--cream);
-  --color-lixi: var(--lixi);
-  --color-background: var(--milk);
-  --color-foreground: var(--plum);
+  --color-ivory: var(--ivory);
+  --color-paper: var(--paper);
+  --color-lacquer: var(--lacquer);
+  --color-umber: var(--umber);
+  --color-gold: var(--gold);
+  --color-gold-deep: var(--goldDeep);
+  --color-son: var(--son);
+  --color-ink: var(--ink);
+  --color-background: var(--ivory);
+  --color-foreground: var(--ink);
   --font-sans: var(--font-be-vietnam);
-  --font-display: var(--font-agbalumo);
-  --font-numeric: var(--font-fraunces);
+  --font-serif: var(--font-cormorant);
+  --font-script: var(--font-imperial);
 }
 
 @theme {
-  --animate-marquee: marquee 28s linear infinite;
-  --animate-sway: sway 3.6s ease-in-out infinite alternate;
-  --animate-bob: bob 0.7s ease-in-out infinite alternate;
+  /* Chuyển động chậm, không nảy: expo-out cho xuất hiện, in-out cho chuyển cảnh */
+  --ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
 
-  /* Nhún theo nhịp bước (đội bưng quả) */
-  @keyframes bob {
-    from {
-      transform: translateY(0) rotate(-1deg);
-    }
-    to {
-      transform: translateY(-3%) rotate(1deg);
-    }
-  }
-  --animate-flutter: flutter 1.8s ease-in-out infinite alternate;
-
-  /*
-   * Rơi từ trên xuống, lệch theo gió. Ba biến thể độ lệch/xoay viết cứng (không dùng var()),
-   * vì keyframe có var() buộc trình duyệt chạy animation trên luồng chính thay vì GPU.
-   */
-  --animate-petal-a: petal-a 20s linear infinite;
-  --animate-petal-b: petal-b 20s linear infinite;
-  --animate-petal-c: petal-c 20s linear infinite;
-
-  @keyframes petal-a {
-    to {
-      transform: translate3d(-8vw, 110vh, 0) rotate(320deg);
-    }
-  }
-  @keyframes petal-b {
-    to {
-      transform: translate3d(-15vw, 110vh, 0) rotate(-420deg);
-    }
-  }
-  @keyframes petal-c {
-    to {
-      transform: translate3d(-22vw, 110vh, 0) rotate(540deg);
-    }
-  }
-
-  /* Lật nhẹ như cánh hoa chao trong gió */
-  @keyframes flutter {
-    from {
-      transform: rotateY(0deg) translateX(-6px);
-    }
-    to {
-      transform: rotateY(70deg) translateX(6px);
-    }
-  }
-
-  @keyframes sway {
-    from {
-      rotate: -1.5deg;
-    }
-    to {
-      rotate: 1.5deg;
-    }
-  }
+  --animate-marquee: marquee 70s linear infinite;
 
   @keyframes marquee {
     to {
@@ -89,34 +34,37 @@
 }
 
 html {
-  /* Agbalumo chỉ có một độ đậm: cấm trình duyệt tự làm đậm/nghiêng giả */
+  /* Imperial Script chỉ có một độ đậm: cấm trình duyệt tự làm đậm/nghiêng giả */
   font-synthesis: none;
 }
 
-/* Fraunces bản mềm: nét tròn (SOFT) và chi tiết "lệch" nghịch (WONK) */
-.font-numeric {
-  font-variation-settings:
-    "SOFT" 100,
-    "WONK" 1,
-    "opsz" 144;
+body {
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 300;
 }
 
-body {
-  background: var(--milk);
-  color: var(--plum);
-  font-family: var(--font-sans), sans-serif;
+/* Số hiển thị: số kiểu cũ của Garamond nhảy cao thấp, đếm ngược cần số thẳng hàng */
+.figures {
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 :focus-visible {
-  outline: 3px solid var(--lilac);
-  outline-offset: 3px;
+  outline: 1px solid var(--gold);
+  outline-offset: 4px;
 }
 
-/* Chữ "sticker" kiểu Y2K: lớp bóng lệch hồng + xanh */
-.y2k-type {
-  text-shadow:
-    0.04em 0.04em 0 var(--bubblegum),
-    0.08em 0.08em 0 var(--sky);
+/*
+ * Mặt sơn mài: nền then đen, ánh cánh gián loang từ trên xuống, thêm hạt mịn như mặt mài.
+ * Hạt là SVG nhiễu nhúng sẵn (không tải ngoài), phủ rất nhẹ để không thành "noise filter".
+ */
+.lacquer {
+  background-color: var(--lacquer);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .9 0 0 0 0 .7 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 70% at 50% 0%, #3b241699 0%, transparent 70%);
+  color: var(--ivory);
 }
 
 /* Con trỏ tuỳ biến (CustomCursor): ẩn con trỏ hệ thống, trừ ô nhập chữ */

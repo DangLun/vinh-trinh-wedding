@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { sticker } from "@/components/ui/sticker";
+import { button } from "@/components/ui/button";
 
-const btn = "inline-flex min-h-10 items-center px-4 text-sm font-semibold";
+const btn = "min-h-10 px-4";
 
 /** Sao chép link / gửi qua bảng chia sẻ của điện thoại (chọn Zalo, Messenger…) */
 export function InviteActions({
@@ -40,18 +40,14 @@ export function InviteActions({
       <button
         type="button"
         onClick={() => copy(url)}
-        className={sticker({ tone: "butter", shadow: false, className: btn })}
+        className={button({ className: btn })}
       >
-        {copied ? "Đã chép ✓" : "Sao chép link"}
+        {copied ? "Đã chép" : "Sao chép link"}
       </button>
       <button
         type="button"
         onClick={share}
-        className={sticker({
-          tone: "bubblegum",
-          shadow: false,
-          className: btn,
-        })}
+        className={button({ tone: "son", className: btn })}
       >
         Gửi
       </button>
@@ -59,7 +55,7 @@ export function InviteActions({
         href={url}
         target="_blank"
         rel="noreferrer"
-        className={sticker({ shadow: false, className: btn })}
+        className={button({ className: btn })}
       >
         Xem thử
       </a>

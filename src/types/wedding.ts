@@ -14,6 +14,8 @@ export type WeddingEvent = {
   time: string;
   /** Giờ kết thúc (ISO 8601) — dùng cho "Lưu vào lịch"; bỏ trống thì tính 2 tiếng */
   endTime?: string;
+  /** Ngày âm lịch hiện dưới ngày dương: "Mùng 9 tháng Giêng" */
+  lunar?: string;
   place: string;
   address: string;
   mapUrl: string;
@@ -50,6 +52,8 @@ export type WeddingConfig = {
   bride: Person;
   hashtag: string;
   marquee: string[];
+  /** Ảnh chân dung trong khung vòm ở Hero (ảnh dọc, khoảng 3:4) */
+  heroImage: { src: string; alt: string };
   /** Thời điểm chính (tiệc cưới), ISO 8601 kèm múi giờ — dùng cho Hero và đếm ngược */
   date: string;
   events: WeddingEvent[];

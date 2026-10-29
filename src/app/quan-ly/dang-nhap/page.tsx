@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { LoginForm } from "@/components/admin/LoginForm";
-import { Bride, Groom } from "@/components/sections/Couple";
-import { GradientMesh } from "@/components/ui/GradientMesh";
+import { Monogram } from "@/components/ui/Monogram";
 import { coupleName } from "@/config/wedding";
 
 export const metadata: Metadata = {
@@ -11,14 +10,9 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <main className="relative isolate grid min-h-svh place-items-center overflow-hidden px-4 py-10">
-      <GradientMesh />
+    <main className="lacquer relative isolate grid min-h-svh place-items-center overflow-hidden px-4 py-10">
       <div className="w-full max-w-sm">
-        {/* Cô dâu chú rể nắm tay ló lên sau thẻ (phần chân bị thẻ che) */}
-        <div aria-hidden className="-mb-16 flex justify-center">
-          <Groom className="w-24" />
-          <Bride className="-ml-6 w-24" />
-        </div>
+        <Monogram className="mx-auto mb-8 size-20" />
         <LoginForm />
       </div>
     </main>
