@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import CustomCursor from "@/components/effects/CustomCursor";
 import SmoothScroll from "@/components/effects/SmoothScroll";
 import { paletteVars } from "@/config/theme";
 import { coupleName, wedding } from "@/config/wedding";
-import { display, sans } from "./fonts";
+import { display, numeric, sans } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,12 +15,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="vi"
-      className={`${sans.variable} ${display.variable} antialiased`}
+      className={`${sans.variable} ${display.variable} ${numeric.variable} antialiased`}
       style={paletteVars}
     >
       <body>
         <SmoothScroll />
         {children}
+        <CustomCursor />
       </body>
     </html>
   );

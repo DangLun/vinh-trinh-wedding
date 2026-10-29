@@ -19,6 +19,16 @@ const fullDateTime = new Intl.DateTimeFormat("vi-VN", {
   timeZone: WEDDING_TIME_ZONE,
 });
 
+const clock = new Intl.DateTimeFormat("vi-VN", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+  timeZone: WEDDING_TIME_ZONE,
+});
+
+/** "08:00" */
+export const formatTime = (iso: string) => clock.format(new Date(iso));
+
 /** "20.12.2026" */
 export const formatDotDate = (iso: string) =>
   dotDate.format(new Date(iso)).replaceAll("/", ".");

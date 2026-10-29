@@ -10,7 +10,7 @@ export default function LoveStory() {
         {wedding.loveStory.map((s) => (
           <li key={s.date}>
             <p className="text-sm font-semibold">{s.date}</p>
-            <h3 className="font-display font-semibold">{s.title}</h3>
+            <h3 className="font-display text-xl">{s.title}</h3>
             <p>{s.text}</p>
           </li>
         ))}

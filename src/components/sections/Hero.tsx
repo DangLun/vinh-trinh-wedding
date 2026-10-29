@@ -33,8 +33,11 @@ export default function Hero({ guestName }: { guestName?: string }) {
             </motion.p>
           )}
 
-          <h1 className="font-display y2k-type my-auto grid w-full grid-cols-[minmax(0,1fr)] text-[clamp(3rem,14vw,11rem)] leading-[0.9] font-black tracking-tight">
-            <motion.span {...springIn(1)} className="justify-self-start">
+          <h1 className="font-display my-auto grid w-full grid-cols-[minmax(0,1fr)] text-[clamp(3.5rem,19vw,12rem)] leading-[0.95]">
+            <motion.span
+              {...springIn(1)}
+              className="chrome-text justify-self-start"
+            >
               {wedding.groom.name}
             </motion.span>
             <motion.span
@@ -43,12 +46,15 @@ export default function Hero({ guestName }: { guestName?: string }) {
               className={sticker({
                 tone: "bubblegum",
                 className:
-                  "my-2 justify-self-center px-[0.35em] py-[0.05em] text-[0.35em] [text-shadow:none]",
+                  "my-2 justify-self-center px-[0.35em] py-[0.05em] text-[0.35em]",
               })}
             >
               &amp;
             </motion.span>
-            <motion.span {...springIn(3)} className="justify-self-end">
+            <motion.span
+              {...springIn(3)}
+              className="chrome-text justify-self-end"
+            >
               {wedding.bride.name}
             </motion.span>
           </h1>
@@ -61,7 +67,7 @@ export default function Hero({ guestName }: { guestName?: string }) {
               className={sticker({
                 shadow: false,
                 className:
-                  "font-display px-6 py-2 text-lg font-semibold sm:text-2xl",
+                  "font-numeric px-6 py-2 text-xl font-bold sm:text-3xl",
               })}
             >
               {day}

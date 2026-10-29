@@ -17,7 +17,41 @@
   --color-background: var(--milk);
   --color-foreground: var(--plum);
   --font-sans: var(--font-be-vietnam);
-  --font-display: var(--font-unbounded);
+  --font-display: var(--font-agbalumo);
+  --font-numeric: var(--font-fraunces);
+}
+
+@theme {
+  --animate-marquee: marquee 28s linear infinite;
+  --animate-sway: sway 3.6s ease-in-out infinite alternate;
+
+  @keyframes sway {
+    from {
+      rotate: -1.5deg;
+    }
+    to {
+      rotate: 1.5deg;
+    }
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-100%);
+    }
+  }
+}
+
+html {
+  /* Agbalumo chỉ có một độ đậm: cấm trình duyệt tự làm đậm/nghiêng giả */
+  font-synthesis: none;
+}
+
+/* Fraunces bản mềm: nét tròn (SOFT) và chi tiết "lệch" nghịch (WONK) */
+.font-numeric {
+  font-variation-settings:
+    "SOFT" 100,
+    "WONK" 1,
+    "opsz" 144;
 }
 
 body {
@@ -36,4 +70,93 @@ body {
   text-shadow:
     0.04em 0.04em 0 var(--bubblegum),
     0.08em 0.08em 0 var(--sky);
+}
+
+/*
+ * Chrome pastel ("hiệu ứng gương"): bạc ánh hồng/tím/xanh, dải tối giữa như đường
+ * chân trời phản chiếu trên kim loại. Chỉ dùng cho 1–2 điểm nhấn.
+ */
+:root {
+  --chrome: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    var(--blush) 18%,
+    var(--lilac) 42%,
+    var(--plum) 50%,
+    var(--sky) 54%,
+    #ffffff 70%,
+    var(--blush) 86%,
+    var(--lilac) 100%
+  );
+}
+
+/* Chữ gương: nền gradient cắt theo chữ, viền mận để đọc được trên nền sáng.
+   Bóng lệch dùng drop-shadow vì text-shadow sẽ đè lên gradient. */
+.chrome-text {
+  background:
+    linear-gradient(
+      105deg,
+      transparent 42%,
+      rgb(255 255 255 / 0.95) 50%,
+      transparent 58%
+    ),
+    var(--chrome);
+  background-size:
+    250% 100%,
+    100% 100%;
+  background-position:
+    150% 0,
+    0 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Viền mận 4 hướng bằng drop-shadow (text-stroke vẽ cả nét chồng bên trong
+     chữ của font biến thể), sau đó là bóng lệch hồng + xanh */
+  filter: drop-shadow(0.014em 0 0 var(--plum))
+    drop-shadow(-0.014em 0 0 var(--plum)) drop-shadow(0 0.014em 0 var(--plum))
+    drop-shadow(0 -0.014em 0 var(--plum))
+    drop-shadow(0.035em 0.035em 0 var(--bubblegum))
+    drop-shadow(0.035em 0.035em 0 var(--sky));
+  animation: chrome-sheen 7s ease-in-out infinite;
+}
+
+/* Vệt sáng lướt qua chữ, nghỉ phần lớn thời gian */
+@keyframes chrome-sheen {
+  0%,
+  70% {
+    background-position:
+      150% 0,
+      0 0;
+  }
+  100% {
+    background-position:
+      -50% 0,
+      0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chrome-text {
+    animation: none;
+  }
+}
+
+/* Viền gương: nền ô (--tile) trong padding-box, chrome ở border-box */
+.chrome-border {
+  border: 5px solid transparent;
+  background:
+    linear-gradient(var(--tile, var(--milk)), var(--tile, var(--milk)))
+      padding-box,
+    var(--chrome) border-box;
+}
+
+/* Con trỏ tuỳ biến (CustomCursor): ẩn con trỏ hệ thống, trừ ô nhập chữ */
+@media (hover: hover) and (pointer: fine) {
+  html.custom-cursor,
+  html.custom-cursor * {
+    cursor: none !important;
+  }
+  html.custom-cursor :is(input, textarea, [contenteditable="true"]) {
+    cursor: text !important;
+  }
 }

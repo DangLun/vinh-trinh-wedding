@@ -8,6 +8,8 @@ export type WeddingEvent = {
   title: string;
   /** ISO 8601, kèm múi giờ (+07:00) */
   time: string;
+  /** Giờ kết thúc (ISO 8601) — dùng cho "Lưu vào lịch"; bỏ trống thì tính 2 tiếng */
+  endTime?: string;
   place: string;
   address: string;
   mapUrl: string;
@@ -19,12 +21,23 @@ export type StoryMilestone = {
   text: string;
 };
 
-export type GalleryImage = {
+type GalleryMediaBase = {
   src: string;
   alt: string;
+  /** Kích thước gốc — dùng để giữ tỉ lệ khung, tránh nhảy layout */
   width: number;
   height: number;
 };
+
+export type GalleryImage = GalleryMediaBase & { type: "image" };
+
+export type GalleryVideo = GalleryMediaBase & {
+  type: "video";
+  /** Ảnh hiện trong lúc video đang tải */
+  poster: string;
+};
+
+export type GalleryItem = GalleryImage | GalleryVideo;
 
 export type WeddingConfig = {
   groom: Person;
@@ -35,6 +48,6 @@ export type WeddingConfig = {
   date: string;
   events: WeddingEvent[];
   loveStory: StoryMilestone[];
-  gallery: GalleryImage[];
+  gallery: GalleryItem[];
   music: string;
 };

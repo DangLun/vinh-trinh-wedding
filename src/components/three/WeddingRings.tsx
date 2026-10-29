@@ -2,6 +2,7 @@ import { useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
 import * as THREE from "three";
 import { palette } from "@/config/theme";
+import { setCursorVariant } from "@/lib/cursor";
 import { ChromeMaterial } from "./ChromeMaterial";
 
 /** Cặp nhẫn lồng nhau: tự xoay, nghiêng theo con trỏ, phóng nhẹ khi hover. */
@@ -27,11 +28,11 @@ export function WeddingRings({ onSelect }: { onSelect?: () => void }) {
         },
         onPointerOver: () => {
           setHovered(true);
-          document.body.style.cursor = "pointer";
+          setCursorVariant("hover");
         },
         onPointerOut: () => {
           setHovered(false);
-          document.body.style.cursor = "";
+          setCursorVariant("default");
         },
       }
     : {};

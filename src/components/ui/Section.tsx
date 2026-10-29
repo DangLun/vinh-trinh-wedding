@@ -24,10 +24,7 @@ export function Section({ width = "md", className, ...props }: SectionProps) {
 export function SectionHeading({ className, ...props }: ComponentProps<"h2">) {
   return (
     <h2
-      className={cn(
-        "font-display mb-8 text-3xl font-bold sm:text-4xl",
-        className,
-      )}
+      className={cn("font-display mb-8 text-4xl sm:text-5xl", className)}
       {...props}
     />
   );
