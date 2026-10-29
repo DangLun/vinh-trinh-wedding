@@ -1,20 +1,11 @@
 "use client";
 
-import {
-  AnimatePresence,
-  animate,
-  MotionConfig,
-  motion,
-  useInView,
-  useReducedMotion,
-} from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { wedding } from "@/config/wedding";
 import { useCountdown } from "@/hooks/useCountdown";
 import { type BearerGender, TrayBearer } from "./TrayBearer";
 import { cn } from "@/lib/cn";
-import { maiBurst } from "@/lib/confetti";
 import {
   formatDotDate,
   formatTime,
@@ -63,57 +54,14 @@ function RollingNumber({ value }: { value: string }) {
   );
 }
 
-/**
- * Số trên mâm: "00" khi người bưng chưa vào chỗ, vào chỗ rồi thì lăn từ 0 lên giá trị thật,
- * sau đó chạy theo đồng hồ như thường (RollingNumber).
- */
-function TrayNumber({ value, arrived }: { value: number; arrived: boolean }) {
-  const still = useReducedMotion();
-  const [counted, setCounted] = useState<number | null>(null);
-  const [done, setDone] = useState(false);
-  // Giá trị mới nhất, đọc đúng lúc bắt đầu đếm; giây nhảy giữa chừng không làm đếm lại
-  const latest = useRef(value);
-  useEffect(() => {
-    latest.current = value;
-  });
-
-  useEffect(() => {
-    if (!arrived || done || still) return;
-    const controls = animate(0, latest.current, {
-      duration: 0.9,
-      ease: "easeOut",
-      onUpdate: (v) => setCounted(Math.round(v)),
-      onComplete: () => setDone(true),
-    });
-    return () => controls.stop();
-  }, [arrived, done, still]);
-
-  // Giảm chuyển động: bỏ đoạn đếm, hiện số thật ngay khi vào chỗ
-  if (done || (arrived && still)) return <RollingNumber value={pad(value)} />;
-  return <>{pad(counted ?? 0)}</>;
-}
-
-export default function Countdown() {
-  const left = useCountdown(wedding.date);
+export default function Countdown({
+  target = wedding.date,
+}: {
+  /** Mốc đếm ngược (ISO); link mời riêng đếm tới lễ đầu tiên khách được mời */
+  target?: string;
+}) {
+  const left = useCountdown(target);
   const over = left !== null && isOver(left);
-  const team = useRef<HTMLDivElement>(null);
-  // Đội bưng quả bắt đầu đi vào khi khối đếm ngược lộ ra khoảng 1/3
-  const go = useInView(team, { once: true, amount: 0.35 });
-  const [arrived, setArrived] = useState<boolean[]>(() =>
-    units.map(() => false),
-  );
-
-  const onArrive = (i: number) => {
-    setArrived((a) => a.map((v, k) => v || k === i));
-    // Người cuối vào chỗ: bắn chùm hoa mai từ giữa đội
-    if (i === units.length - 1 && team.current) {
-      const r = team.current.getBoundingClientRect();
-      maiBurst({
-        x: (r.left + r.width / 2) / window.innerWidth,
-        y: (r.top + r.height * 0.4) / window.innerHeight,
-      });
-    }
-  };
 
   return (
     <MotionConfig reducedMotion="user">
@@ -124,23 +72,13 @@ export default function Countdown() {
 
         {!over && (
           <div
-            ref={team}
             role="timer"
             aria-live="off"
             className="grid grid-cols-3 items-end gap-x-3 gap-y-6 sm:grid-cols-4 sm:gap-x-6"
           >
             {units.map(({ key, label, gender, main }, i) => (
-              // Bước từ mép trái màn hình vào chỗ, người sau trễ hơn người trước một nhịp
-              <motion.div
+              <div
                 key={key}
-                initial={{ x: "-110vw" }}
-                animate={go ? { x: 0 } : undefined}
-                transition={{
-                  duration: 1.6,
-                  ease: [0.22, 1, 0.36, 1],
-                  delay: i * 0.35,
-                }}
-                onAnimationComplete={() => onArrive(i)}
                 className={cn(
                   "mx-auto w-full max-w-48",
                   main && "col-span-3 max-w-52 sm:col-span-1 sm:max-w-48",
@@ -157,15 +95,11 @@ export default function Countdown() {
                     )}
                   >
                     {/* "--" giữ chỗ trước khi JS chạy để layout không nhảy */}
-                    {left ? (
-                      <TrayNumber value={left[key]} arrived={arrived[i]} />
-                    ) : (
-                      "--"
-                    )}
+                    {left ? <RollingNumber value={pad(left[key])} /> : "--"}
                   </span>
                   <span className="text-[8cqw] font-semibold">{label}</span>
                 </TrayBearer>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}
@@ -174,8 +108,8 @@ export default function Countdown() {
           {over ? "Cảm ơn bạn đã đến chung vui cùng tụi mình" : "Tính tới"}{" "}
           {!over && (
             <strong>
-              {formatTime(wedding.date)}, {formatWeekday(wedding.date)}{" "}
-              {formatDotDate(wedding.date)}
+              {formatTime(target)}, {formatWeekday(target)}{" "}
+              {formatDotDate(target)}
             </strong>
           )}
         </p>

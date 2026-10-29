@@ -6,6 +6,7 @@ import { coupleName, wedding } from "@/config/wedding";
 import { googleCalendarUrl } from "@/lib/calendar";
 import { cn } from "@/lib/cn";
 import { formatDotDate, formatTime, formatWeekday } from "@/lib/date";
+import type { WeddingEvent } from "@/types/wedding";
 
 // Mỗi vé một tông, xoay vòng nếu có nhiều sự kiện hơn
 const looks = [
@@ -58,12 +59,25 @@ function CalendarIcon() {
   );
 }
 
-export default function EventInfo() {
+export default function EventInfo({
+  events = wedding.events,
+  guestName,
+}: {
+  /** Chỉ hiện các lễ khách được mời (link mời riêng); mặc định tất cả */
+  events?: WeddingEvent[];
+  guestName?: string;
+}) {
   return (
     <Section width="lg">
-      <SectionHeading>Hẹn bạn ngày vui</SectionHeading>
-      <ul className="grid gap-10 sm:grid-cols-2 sm:gap-x-14">
-        {wedding.events.map((e, i) => {
+      <SectionHeading>Hẹn {guestName ?? "bạn"} ngày vui</SectionHeading>
+      <ul
+        className={cn(
+          "grid gap-10 sm:gap-x-14",
+          // Khách chỉ được mời một lễ: vé nằm giữa thay vì lệch trái
+          events.length > 1 ? "sm:grid-cols-2" : "mx-auto max-w-md",
+        )}
+      >
+        {events.map((e, i) => {
           const look = looks[i % looks.length];
           return (
             <li key={e.title}>

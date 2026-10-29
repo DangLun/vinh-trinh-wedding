@@ -18,12 +18,12 @@ export const sampleStory: StoryMilestone[] = [
   {
     date: "02.2021",
     title: "Cái Tết đầu tiên",
-    text: "Lần đầu Vinh về quê Trinh ăn Tết, bị cả xóm hỏi \"bồ con Trinh hả?\". Ngồi gói bánh tét tới khuya, gói cái nào bung cái đó.",
+    text: 'Lần đầu Vinh về quê Trinh ăn Tết, bị cả xóm hỏi "bồ con Trinh hả?". Ngồi gói bánh tét tới khuya, gói cái nào bung cái đó.',
   },
   {
     date: "08.2022",
     title: "Chính thức hẹn hò",
-    text: "Sau hơn hai năm làm \"bạn thân\", trong chuyến đi Đà Lạt bằng chiếc xe van thuê, Vinh lấy hết can đảm nói câu mà ai cũng đoán trước. Trinh không trả lời, chỉ đưa cho Vinh nửa ổ bánh mì đang ăn dở. Tới giờ hai đứa vẫn cãi nhau xem như vậy là đồng ý hay chưa.",
+    text: 'Sau hơn hai năm làm "bạn thân", trong chuyến đi Đà Lạt bằng chiếc xe van thuê, Vinh lấy hết can đảm nói câu mà ai cũng đoán trước. Trinh không trả lời, chỉ đưa cho Vinh nửa ổ bánh mì đang ăn dở. Tới giờ hai đứa vẫn cãi nhau xem như vậy là đồng ý hay chưa.',
     image: {
       src: "/images/gallery/sample/12.webp",
       alt: "Chuyến đi bằng xe van",

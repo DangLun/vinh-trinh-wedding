@@ -4,7 +4,11 @@ export type Person = {
   fullName: string;
 };
 
+/** Mã lễ, dùng để chọn khách được mời dự lễ nào (Guest.events) */
+export type EventId = "vu-quy" | "tan-hon";
+
 export type WeddingEvent = {
+  id: EventId;
   title: string;
   /** ISO 8601, kèm múi giờ (+07:00) */
   time: string;

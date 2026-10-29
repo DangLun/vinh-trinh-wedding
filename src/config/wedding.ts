@@ -12,6 +12,7 @@ export const wedding: WeddingConfig = {
   date: "2027-02-14T08:00:00+07:00",
   events: [
     {
+      id: "vu-quy",
       title: "Lễ Vu Quy",
       time: "2027-02-13T08:00:00+07:00",
       place: "Tư gia nhà gái",
@@ -19,6 +20,7 @@ export const wedding: WeddingConfig = {
       mapUrl: "https://maps.google.com/?q=",
     },
     {
+      id: "tan-hon",
       title: "Lễ Tân Hôn",
       time: "2027-02-14T08:00:00+07:00",
       place: "Tư gia nhà trai",

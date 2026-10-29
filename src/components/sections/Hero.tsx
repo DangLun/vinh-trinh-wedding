@@ -15,10 +15,16 @@ import { wedding } from "@/config/wedding";
 import { formatDotDate, formatWeekday } from "@/lib/date";
 import { springIn } from "@/lib/motion";
 
-const day = formatDotDate(wedding.date);
-const weekday = formatWeekday(wedding.date);
-
-export default function Hero({ guestName }: { guestName?: string }) {
+export default function Hero({
+  guestName,
+  date = wedding.date,
+}: {
+  guestName?: string;
+  /** Ngày hiện ở Hero; link mời riêng dùng ngày lễ đầu tiên khách được mời */
+  date?: string;
+}) {
+  const day = formatDotDate(date);
+  const weekday = formatWeekday(date);
   // Một chuỗi xuất hiện duy nhất: lời mời → chú rể → & → cô dâu → ngày.
   // reducedMotion="user": bỏ trượt/xoay, chỉ giữ fade cho người bật giảm chuyển động.
   const ref = useRef<HTMLElement>(null);

@@ -6,14 +6,20 @@ Landing page đám cưới Vinh (chú rể) & Trinh (cô dâu), phong cách GenZ
 
 ## Stack
 
-Next.js 16 (App Router, Cache Components bật), TypeScript, Tailwind v4, npm (máy không có pnpm). Deploy dự kiến: Vercel.
+Next.js 16 (App Router, Cache Components bật), TypeScript, Tailwind v4, npm (máy không có pnpm). Deploy: Vercel (project `vinh-trinh-wedding`, tự build khi push lên `main`). Tên miền đã chọn: **vinhtrinh.love** (chưa mua/gắn; nếu mua thêm `vinhtrinh.vn` thì chuyển hướng về `.love`).
 Hiệu ứng: motion, gsap + @gsap/react, lenis, canvas-confetti, swiper, photoswipe. Three.js (React Three Fiber) chỉ dùng cho 1–2 điểm nhấn, lazy-load, có fallback tĩnh cho máy yếu / prefers-reduced-motion.
 
 ## Cấu trúc
 
 - `src/config/wedding.ts`: mọi thông tin đám cưới (dữ liệu mẫu, chờ thông tin thật), kiểu ở `src/types/wedding.ts`
 - `src/config/theme.ts`: nguồn màu duy nhất. `palette` (gắn biến `--<tên>` lên `<html>`, dùng cho CSS, 3D, confetti, SVG; thêm màu → khai báo thêm trong `@theme` của `globals.css`), `metals` (màu kim loại thật cho nhẫn 3D), `figure` (màu da, áo dài đội bưng quả, vest chú rể, đầm cô dâu)
-- `src/data/guests.ts`: danh sách khách; `/moi/[slug]` là link mời riêng ("Thân mời Anh Tuấn"), `/khach-moi` là trang danh sách
+- Thiệp mời riêng từng khách (không backend, dựng sẵn lúc build):
+  - `src/data/guests.ts` (DỮ LIỆU MẪU): mỗi khách có `code` (mã link), `name`, `self` (cô dâu chú rể tự xưng), `formal`, `side`, `events` (lễ được mời, bỏ trống = tất cả), `plusOne`, `note`. Kiểu ở `src/types/guest.ts`; hàm ở `src/lib/guests.ts` (build báo lỗi nếu trùng/sai mã)
+  - `/m/[code]`: `Envelope` (`src/components/invite/`: phong bì → thư mời → vào trang) + `WeddingPage guest=…` (Hero, đếm ngược, vé sự kiện, footer theo khách). Envelope chỉ nhận chuỗi từ server, KHÔNG import danh sách khách vào client component (để danh sách không lọt xuống trình duyệt)
+  - Ảnh xem trước Zalo/FB: `src/app/opengraph-image.tsx` (chung) và `src/app/m/[code]/opengraph-image.tsx` (riêng từng khách, `generateStaticParams`), vẽ bằng `src/lib/og.tsx` với font TTF trong `assets/fonts` (ImageResponse không đọc woff2)
+  - `/quan-ly`: trang quản lý (QR qua thư viện `qrcode`, sao chép link, chia sẻ), khoá bằng `src/proxy.ts` (Basic Auth, biến môi trường `ADMIN_PASSWORD`; dev chưa đặt thì cho vào). Next 16: `middleware` đổi tên thành `proxy`
+  - `src/config/site.ts`: `siteUrl` (NEXT_PUBLIC_SITE_URL → VERCEL_PROJECT_PRODUCTION_URL → localhost), dùng cho `metadataBase` và link tuyệt đối. `robots.ts` chặn `/m/` và `/quan-ly`
+  - Với Cache Components, mã khách sai vẫn trả 200 (hiện trang 404); `dynamicParams` không dùng được. Trang `/m/[code]` đặt `export const instant = false` (đọc params ngoài Suspense; khách mở thẳng từ link nên không cần điều hướng tức thì), bỏ dòng này sẽ lại hiện lỗi `instant-shell-url-data` ở dev
 - `src/components/sections/*`: Hero, Marquee, Countdown, LoveStory, EventInfo, Gallery, GuestWall, Footer, ghép trong `WeddingPage.tsx`
   - `TrayBearer.tsx`: nhân vật đội bưng quả cho Countdown (SVG chibi; nam áo dài xanh + khăn đóng, nữ áo dài đỏ + búi tóc cài mai). Lớp: thân SVG → mâm quả HTML đè lên ngực (nắp sơn mài đỏ viền vàng, núm vàng, số trong ô bầu dục vàng) → hai bàn tay SVG đỡ đáy mâm. Khung là `@container` nên cỡ chữ trong mâm dùng `cqw`. Cả đội nhún so le (`animate-bob`)
   - `Couple.tsx`: chibi chú rể (vest xanh than, nơ đỏ, hoa mai cài ngực) và cô dâu (đầm trắng xoè, voan, vương miện, bó hoa) + `CoupleFinale` ở cuối LoveStory
@@ -52,10 +58,9 @@ Hiệu ứng: motion, gsap + @gsap/react, lenis, canvas-confetti, swiper, photos
 - Chủ đề đã chốt: Pastel Y2K + "xuân miền Tây × Valentine". Cưới ở miền Tây: tháng 2 mùa khô, sáng sớm gió bấc se lạnh. Màu: sáng sớm se lạnh (xanh/tím sương) → nắng hoa mai (vàng) → ngọt ngào (hồng, đỏ lì xì `lixi`, đỏ rượu `plum` cho chữ). Miền Tây chưng mai vàng: không dùng hoa đào, không có tuyết.
 - Design system: màu `milk, bubblegum, lilac, sky, butter, plum, lixi` + tông nhạt `blush, mist, ice, cream`; `lixi` chỉ làm điểm nhấn, chữ trên nền lixi dùng `text-milk`. Font (khai báo ở `src/app/fonts.ts`): Agbalumo (`font-display`, tên + tiêu đề, chỉ có weight 400 nên không dùng class đậm; `font-synthesis: none`), Fraunces bản mềm SOFT/WONK (`font-numeric`, giờ/ngày/đếm ngược), Be Vietnam Pro (nội dung); `.y2k-type` cho chữ bóng lệch hồng/xanh.
 - Hero 3D: cặp nhẫn kim loại thật (vàng hồng + vàng 18K, `MetalMaterial` + `metals`; môi trường kiểu chụp trang sức: dải đèn trắng mảnh + tấm hắt ngà, đừng thêm mảng sáng to vì sẽ ra chất nhựa), tim/sao/bong bóng bay, chạm nhẫn → confetti; fallback SVG tĩnh (gradient kim loại) khi reduced-motion, máy yếu, không WebGL2.
-- Đã làm xong giao diện: Hero, Marquee (nền đỏ lì xì; chữ: TEAM INH INH, VALENTINE, VINH ♥ TRINH, CƯỚI ĐẦU XUÂN), Countdown (đội bưng quả 2 nam 2 nữ; mobile: mâm "ngày" một hàng, 3 mâm còn lại hàng dưới), EventInfo (2 vé Ticket, nút Chỉ đường + Lưu vào lịch Google), dây ảnh hai bên, hoa rơi, nền đổi màu.
+- Đã làm xong giao diện: Hero, Marquee (nền đỏ lì xì; chữ: TEAM INH INH, VALENTINE, VINH ♥ TRINH, CƯỚI ĐẦU XUÂN), Countdown (đội bưng quả 2 nam 2 nữ đứng sẵn, chỉ nhún tại chỗ — đã bỏ hiệu ứng bước vào khi cuộn theo ý chủ dự án; mobile: mâm "ngày" một hàng, 3 mâm còn lại hàng dưới), EventInfo (2 vé Ticket, nút Chỉ đường + Lưu vào lịch Google), dây ảnh hai bên, hoa rơi, nền đổi màu.
 - Hiệu ứng khi cuộn (dùng `motion` `useScroll`/`useInView`, tôn trọng reduced-motion):
   - Hero: cuộn xuống thì "Vinh" trượt trái, "Trinh" trượt phải, nhẫn thu nhỏ + xoay (`HeroRings` nhận `sceneStyle`/`hintStyle` riêng để dòng gợi ý không xoay theo), "&" + ngày + gợi ý mờ dần. Hiệu ứng xuất hiện ban đầu và mờ theo cuộn cùng dùng opacity nên tách thành 2 lớp lồng nhau.
-  - Countdown: đội bưng quả bước từ mép trái vào lần lượt; vào chỗ thì số lăn từ 00 lên số thật (`TrayNumber`), người cuối vào chỗ thì bắn `maiBurst()` (`src/lib/confetti.ts`).
   - LoveStory: sợi tơ hồng vẽ dần theo cuộn (đầu sợi có tim, luôn ở giữa màn hình), mốc bật ra khi đầu sợi chạm tới (mốc có `image` thì hiện ảnh đầu thẻ, dán băng washi; đang dùng ảnh mẫu album). Cuối đường là cô dâu chú rể tiến lại gần theo cuộn, nắm tay đúng lúc đầu sợi chỉ chạm tới tay (container sợi chỉ có `pb-28 sm:pb-36` khớp với margin âm của `CoupleFinale`, đổi kích thước nhân vật thì sửa cả hai), rồi bật tim + `heartBurst()` một lần. Sợi chỉ ở giữa (desktop, mốc so le) hoặc lề trái (mobile).
 - Còn thô / TODO: Gallery (bento + lightbox PhotoSwipe).
 - Tailwind v4 nạp qua `@tailwindcss/postcss` (`postcss.config.mjs`), theo docs Next 16. Đã bỏ loader `@tailwindcss/turbopack` vì nó làm Turbopack cache giữ `globals.css` cũ (sửa CSS không ăn ở cả dev lẫn build). Nếu CSS không cập nhật: tắt dev, `rm -rf .next`, chạy lại.
