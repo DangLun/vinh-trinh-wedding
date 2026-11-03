@@ -66,6 +66,8 @@ export type WeddingConfig = {
   heroImage: { src: string; alt: string };
   /** Thời điểm chính (tiệc cưới), ISO 8601 kèm múi giờ — dùng cho Hero và đếm ngược */
   date: string;
+  /** Hạn khách hồi âm (RSVP), ISO 8601 kèm múi giờ */
+  rsvpBy: string;
   events: WeddingEvent[];
   loveStory: StoryMilestone[];
   gallery: GalleryItem[];

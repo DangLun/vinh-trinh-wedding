@@ -1,5 +1,6 @@
 "use server";
 
+import { updateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import {
@@ -7,7 +8,9 @@ import {
   createSession,
   SESSION_COOKIE,
   SESSION_DAYS,
+  verifySession,
 } from "@/lib/admin-session";
+import { GUESTS_TAG } from "@/lib/guests";
 
 /** `attempt` tăng mỗi lần sai để giao diện biết mà lắc thẻ, kể cả khi lỗi giống lần trước */
 export type LoginState = { error?: string; attempt: number };
@@ -47,4 +50,11 @@ export async function login(
 export async function logout() {
   (await cookies()).delete({ name: SESSION_COOKIE, path: "/quan-ly" });
   redirect("/quan-ly/dang-nhap");
+}
+
+/** Đọc lại tab "Khách mời" ngay, không chờ hết thời gian nhớ tạm */
+export async function refreshGuests() {
+  const token = (await cookies()).get(SESSION_COOKIE)?.value;
+  if (!verifySession(token)) redirect("/quan-ly/dang-nhap");
+  updateTag(GUESTS_TAG);
 }

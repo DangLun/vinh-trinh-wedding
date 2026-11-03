@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import Envelope from "@/components/invite/Envelope";
 import WeddingPage from "@/components/WeddingPage";
 import { coupleName, lunarYearName } from "@/config/wedding";
-import { guests } from "@/data/guests";
 import {
   formatClockWords,
   formatDateWords,
@@ -11,22 +10,34 @@ import {
   formatTime,
   formatWeekday,
 } from "@/lib/date";
-import { findGuest, guestEvents, inviteeLabel, inviteVerb } from "@/lib/guests";
+import {
+  findGuest,
+  getGuests,
+  guestEvents,
+  inviteeLabel,
+  inviteVerb,
+} from "@/lib/guests";
 
 // Trang cần đọc mã khách trên URL trước khi vẽ. Khách luôn mở thẳng từ link (Zalo…), không
 // điều hướng từ trang khác trong app, nên cho phép chặn thay vì đòi hiện tức thì
 // (tắt cảnh báo "instant-shell-url-data" của Cache Components ở chế độ dev).
 export const instant = false;
 
-// Dựng sẵn trang cho từng khách lúc build; mã không có trong danh sách → 404
-export function generateStaticParams() {
-  return guests.map((g) => ({ code: g.code }));
+// Dựng sẵn trang cho từng khách lúc build. Khách thêm vào sheet sau đó thì trang được dựng
+// ở lần mở đầu tiên rồi nhớ lại; mã không có trong danh sách → 404.
+export async function generateStaticParams() {
+  const guests = await getGuests();
+  // Cache Components bắt buộc trả ít nhất một mã: sheet chưa có khách thì dùng một mã
+  // không bao giờ hợp lệ (có dấu gạch), trang đó ra 404
+  return guests.length > 0
+    ? guests.map((g) => ({ code: g.code }))
+    : [{ code: "chua-co-khach" }];
 }
 
 export async function generateMetadata({
   params,
 }: PageProps<"/m/[code]">): Promise<Metadata> {
-  const guest = findGuest((await params).code);
+  const guest = await findGuest((await params).code);
   if (!guest) return {};
   const title = `Thân mời ${inviteeLabel(guest)} | ${coupleName}`;
   const description = `${inviteVerb(guest)} ${inviteeLabel(guest)} đến chung vui trong ngày cưới của ${coupleName} 💌`;
@@ -40,7 +51,7 @@ export async function generateMetadata({
 }
 
 export default async function InvitePage({ params }: PageProps<"/m/[code]">) {
-  const guest = findGuest((await params).code);
+  const guest = await findGuest((await params).code);
   if (!guest) notFound();
 
   // Chỉ chuyền xuống Envelope (client) đúng vài chuỗi của khách này

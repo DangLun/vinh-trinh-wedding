@@ -1,11 +1,11 @@
 import type { Guest } from "@/types/guest";
 
 /**
- * Danh sách khách mời. Mỗi khách có link riêng: vinhtrinh.love/m/<code>.
- * Mã: 5 ký tự chữ thường + số, tự nghĩ ngẫu nhiên cho khó đoán, không được trùng (build sẽ báo lỗi).
- * Đang là DỮ LIỆU MẪU để thử giao diện, thay bằng khách thật.
+ * DỮ LIỆU MẪU để thử giao diện khi chưa nối Google Sheet (SHEET_SCRIPT_URL).
+ * Danh sách khách thật nhập ở tab "Khách mời" trong Google Sheet, xem docs/google-sheets.md.
+ * Mã: 4–8 ký tự chữ thường + số, không được trùng (build sẽ báo lỗi).
  */
-export const guests: Guest[] = [
+export const sampleGuests: Guest[] = [
   {
     code: "t7k2q",
     name: "Anh Tuấn",

@@ -32,6 +32,8 @@ export const wedding: WeddingConfig = {
   },
   // ISO 8601, giờ Việt Nam
   date: "2027-02-14T08:00:00+07:00",
+  // Hạn hồi âm: đủ sớm để chốt số bàn với nhà hàng / người nấu
+  rsvpBy: "2027-01-31T23:59:00+07:00",
   events: [
     {
       id: "vu-quy",
