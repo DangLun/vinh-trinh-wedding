@@ -74,10 +74,39 @@ body {
 /* Con trỏ tuỳ biến (CustomCursor): ẩn con trỏ hệ thống, trừ ô nhập chữ */
 @media (hover: hover) and (pointer: fine) {
   html.custom-cursor,
-  html.custom-cursor * {
+  /* Trừ lớp xem ảnh PhotoSwipe: nó nằm trên con trỏ tuỳ biến, nên dùng con trỏ hệ thống
+     (kính lúp phóng to, bàn tay kéo) của chính PhotoSwipe */
+  html.custom-cursor *:not(.pswp, .pswp *) {
     cursor: none !important;
   }
   html.custom-cursor :is(input, textarea, [contenteditable="true"]) {
     cursor: text !important;
   }
+}
+
+/* Lớp xem ảnh album (PhotoSwipe, GalleryLightbox): nền sơn mài, nút màu ngà */
+.pswp {
+  --pswp-bg: var(--lacquer);
+  --pswp-placeholder-bg: var(--umber);
+  --pswp-icon-color: var(--ivory);
+  --pswp-icon-color-secondary: var(--lacquer);
+  --pswp-icon-stroke-color: var(--lacquer);
+  --pswp-error-text-color: var(--ivory);
+  font-family: var(--font-sans), sans-serif;
+}
+.pswp__counter {
+  font-family: var(--font-serif), serif;
+  font-size: 1rem;
+  font-variant-numeric: lining-nums tabular-nums;
+  opacity: 0.8;
+}
+.pswp-video {
+  display: grid;
+  place-items: center;
+}
+.pswp-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
 }

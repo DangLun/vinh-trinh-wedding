@@ -41,7 +41,7 @@ export function GalleryReveal({
   return (
     <motion.div
       ref={ref}
-      className="relative mb-5 w-full break-inside-avoid overflow-hidden sm:mb-8"
+      className="relative w-full overflow-hidden"
       style={{ aspectRatio: ratio }}
       initial={false}
       animate={{ clipPath: open ? "inset(0% 0 0 0)" : "inset(100% 0 0 0)" }}

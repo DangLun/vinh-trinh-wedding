@@ -21,3 +21,9 @@ export function scrollToTop() {
     window.scrollTo({ top: 0, behavior: still ? "auto" : "smooth" });
   }
 }
+
+/** Tạm dừng / chạy lại cuộn mượt, vd khi mở lớp xem ảnh toàn màn hình (lăn chuột không cuộn trang phía sau) */
+export function pauseScroll(paused: boolean) {
+  if (paused) lenis?.stop();
+  else lenis?.start();
+}
