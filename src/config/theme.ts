@@ -13,11 +13,11 @@ export const palette = {
   // Nền phụ: thẻ giấy trên nền kem
   paper: "#ece4d6",
   // Nền đậm: đỏ rượu
-  lacquer: "#7a1f2b",
+  lacquer: "#57001a",
   // Quầng sáng trên nền đậm
-  umber: "#96303f",
+  umber: "#6e0c26",
   // Đỏ rượu sẫm: nền sau thiệp mời, để thiệp đỏ bên trong vẫn nổi
-  wineDeep: "#4f131c",
+  wineDeep: "#2e000b",
   // Nền tối của lớp xem ảnh lớn: ảnh trên nền tối dễ xem hơn trên nền đỏ
   night: "#14100d",
   // Vàng lá: nét mảnh, chữ nhỏ trên nền tối
@@ -25,12 +25,12 @@ export const palette = {
   // Vàng lá đậm: chữ vàng trên nền ngà (đủ tương phản)
   goldDeep: "#73561f",
   // Điểm nhấn trên nền kem (nút chính, sợi chỉ, thông báo lỗi)
-  son: "#7a1f2b",
+  son: "#57001a",
   // Chữ mực
   ink: "#2a2522",
   // Thiệp mời (theo mẫu thiệp giấy): nền trắng ngà, chữ đỏ rượu, chữ phụ xám ấm
   linen: "#f5f1ea",
-  wine: "#7a1f2b",
+  wine: "#57001a",
   stone: "#b7afa6",
 } as const;
 
