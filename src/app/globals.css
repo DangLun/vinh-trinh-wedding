@@ -84,7 +84,7 @@ body {
   }
 }
 
-/* Lớp xem ảnh album (PhotoSwipe, GalleryLightbox): nền sơn mài, nút màu ngà */
+/* Lớp xem ảnh lớn (PhotoSwipe, components/ui/Lightbox): nền sơn mài, nút màu ngà */
 .pswp {
   --pswp-bg: var(--lacquer);
   --pswp-placeholder-bg: var(--umber);

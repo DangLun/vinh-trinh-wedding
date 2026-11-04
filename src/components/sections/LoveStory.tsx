@@ -11,11 +11,13 @@ import {
 } from "motion/react";
 import Image from "next/image";
 import { useRef } from "react";
+import { Lightbox } from "@/components/ui/Lightbox";
 import { Monogram } from "@/components/ui/Monogram";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { palette } from "@/config/theme";
 import { wedding } from "@/config/wedding";
 import { cn } from "@/lib/cn";
+import { LIGHTBOX_FOCUS, lightboxImage } from "@/lib/lightbox";
 import { easeLuxe } from "@/lib/motion";
 import type { StoryMilestone } from "@/types/wedding";
 
@@ -59,29 +61,35 @@ function Milestone({ item, index }: { item: StoryMilestone; index: number }) {
         )}
       >
         {item.image && (
-          <motion.div
-            className="relative mb-6 aspect-[4/5] overflow-hidden"
-            initial={false}
-            animate={{
-              clipPath: shown ? "inset(0% 0 0 0)" : "inset(100% 0 0 0)",
-            }}
-            transition={{ duration: 1.6, ...ease }}
+          <a
+            {...lightboxImage(item.image)}
+            className={cn("mb-6 block", LIGHTBOX_FOCUS)}
           >
             <motion.div
-              className="absolute inset-0"
+              className="relative aspect-[4/5] overflow-hidden"
               initial={false}
-              animate={{ scale: shown ? 1 : 1.15 }}
-              transition={{ duration: 1.8, ...ease }}
+              animate={{
+                clipPath: shown ? "inset(0% 0 0 0)" : "inset(100% 0 0 0)",
+              }}
+              transition={{ duration: 1.6, ...ease }}
             >
-              <Image
-                src={item.image.src}
-                alt={item.image.alt}
-                fill
-                sizes="(min-width: 640px) 26rem, 80vw"
-                className="object-cover"
-              />
+              <motion.div
+                className="absolute inset-0"
+                initial={false}
+                animate={{ scale: shown ? 1 : 1.15 }}
+                transition={{ duration: 1.8, ...ease }}
+              >
+                <Image
+                  src={item.image.src}
+                  alt={item.image.alt}
+                  fill
+                  sizes="(min-width: 640px) 26rem, 80vw"
+                  className="object-cover"
+                />
+              </motion.div>
             </motion.div>
-          </motion.div>
+            <span className="sr-only">Xem ảnh lớn</span>
+          </a>
         )}
         <motion.div
           initial={false}
@@ -187,11 +195,14 @@ export default function LoveStory() {
             <Thread progress={scrollYProgress} />
           )}
 
-          <ol className="relative">
-            {wedding.loveStory.map((item, i) => (
-              <Milestone key={item.date} item={item} index={i} />
-            ))}
-          </ol>
+          {/* Ảnh các mốc là một bộ: mở một ảnh rồi lướt qua các mốc khác */}
+          <Lightbox>
+            <ol className="relative">
+              {wedding.loveStory.map((item, i) => (
+                <Milestone key={item.date} item={item} index={i} />
+              ))}
+            </ol>
+          </Lightbox>
         </div>
         <Finale progress={scrollYProgress} still={!!still} />
       </Section>

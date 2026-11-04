@@ -10,6 +10,7 @@ import {
 } from "motion/react";
 import Image from "next/image";
 import { useRef } from "react";
+import { Lightbox } from "@/components/ui/Lightbox";
 import { MaiBranch } from "@/components/ui/MaiFlower";
 import { SignatureNames } from "@/components/ui/SignatureNames";
 import { palette } from "@/config/theme";
@@ -17,6 +18,7 @@ import { lunarOf, lunarYear, wedding } from "@/config/wedding";
 import { cn } from "@/lib/cn";
 import { formatDotDate, formatWeekday } from "@/lib/date";
 import { useIntroOpen } from "@/lib/intro";
+import { LIGHTBOX_FOCUS, lightboxImage } from "@/lib/lightbox";
 import { easeLuxe, riseIn } from "@/lib/motion";
 
 // Khung vòm bằng clip-path: bán kính 999px bị trình duyệt thu về đúng nửa bề ngang → nửa hình tròn.
@@ -31,7 +33,7 @@ const INK_SHOWN = "inset(0 0% 0 0)";
 /**
  * Ảnh chân dung trong khung vòm (gợi cửa nhà xưa, cổng hoa cưới), viền chỉ vàng bao ngoài.
  * Vòm mở từ dưới lên khi cửa màn mở đầu vừa hé; ảnh lắng chậm từ 1.15 về 1 trong 8 giây;
- * cuộn xuống thì ảnh trôi chậm hơn khung.
+ * cuộn xuống thì ảnh trôi chậm hơn khung. Bấm vào thì xem ảnh lớn.
  */
 function ArchPortrait({
   play,
@@ -52,42 +54,51 @@ function ArchPortrait({
         animate={{ opacity: play ? 1 : 0 }}
         transition={{ duration: 1.6, delay: 1.4 }}
       />
-      <motion.div
-        className="absolute inset-0 overflow-hidden"
-        initial={{ clipPath: ARCH_CLOSED }}
-        animate={{ clipPath: play ? ARCH_OPEN : ARCH_CLOSED }}
-        transition={{ duration: 1.8, ease: easeLuxe, delay: 0.2 }}
-      >
-        {/* Lớp ảnh cao hơn khung 12% để trôi theo cuộn không lộ mép */}
-        <motion.div
-          className="absolute inset-x-0 -inset-y-[6%]"
-          style={{ y: drift }}
+      <Lightbox className="absolute inset-0">
+        {/* Bo tròn cả thẻ a để phần góc ngoài vòm không bấm được */}
+        <a
+          {...lightboxImage(wedding.heroImage)}
+          className={cn("block size-full rounded-t-full", LIGHTBOX_FOCUS)}
         >
           <motion.div
-            className="size-full"
-            initial={{ scale: 1.15 }}
-            animate={{ scale: play ? 1 : 1.15 }}
-            transition={{ duration: 8, ease: easeLuxe, delay: 0.2 }}
+            className="absolute inset-0 overflow-hidden"
+            initial={{ clipPath: ARCH_CLOSED }}
+            animate={{ clipPath: play ? ARCH_OPEN : ARCH_CLOSED }}
+            transition={{ duration: 1.8, ease: easeLuxe, delay: 0.2 }}
           >
-            <Image
-              src={wedding.heroImage.src}
-              alt={wedding.heroImage.alt}
-              fill
-              priority
-              sizes="(min-width: 768px) 22rem, 62vw"
-              className="object-cover"
+            {/* Lớp ảnh cao hơn khung 12% để trôi theo cuộn không lộ mép */}
+            <motion.div
+              className="absolute inset-x-0 -inset-y-[6%]"
+              style={{ y: drift }}
+            >
+              <motion.div
+                className="size-full"
+                initial={{ scale: 1.15 }}
+                animate={{ scale: play ? 1 : 1.15 }}
+                transition={{ duration: 8, ease: easeLuxe, delay: 0.2 }}
+              >
+                <Image
+                  src={wedding.heroImage.src}
+                  alt={wedding.heroImage.alt}
+                  fill
+                  priority
+                  sizes="(min-width: 768px) 22rem, 62vw"
+                  className="object-cover"
+                />
+              </motion.div>
+            </motion.div>
+            {/* Đáy ảnh tối dần vào nền sơn mài để tên đè lên vẫn đọc rõ */}
+            <div
+              aria-hidden
+              className="absolute inset-x-0 bottom-0 h-2/5"
+              style={{
+                background: `linear-gradient(to top, ${palette.lacquer}e6, transparent)`,
+              }}
             />
           </motion.div>
-        </motion.div>
-        {/* Đáy ảnh tối dần vào nền sơn mài để tên đè lên vẫn đọc rõ */}
-        <div
-          aria-hidden
-          className="absolute inset-x-0 bottom-0 h-2/5"
-          style={{
-            background: `linear-gradient(to top, ${palette.lacquer}e6, transparent)`,
-          }}
-        />
-      </motion.div>
+          <span className="sr-only">Xem ảnh lớn</span>
+        </a>
+      </Lightbox>
     </div>
   );
 }
@@ -170,10 +181,11 @@ export default function Hero({
              * Tên kiểu chữ ký nối nét tim (như thiệp mời), đè lên đáy khung vòm (phần ảnh đã tối dần).
              * Vùng cắt nới 0.3em mỗi phía (padding + margin âm) để nét lượn của thư pháp
              * vươn ra ngoài khung chữ không bị cắt trong lúc "viết".
+             * Không nhận bấm: phần tên đè lên ảnh vẫn mở được ảnh lớn.
              */}
             <motion.h1
               style={{ y: scrollFx(lift), opacity: scrollFx(nameFade) }}
-              className="relative z-10 -mt-[0.62em] text-center text-[clamp(3.5rem,15vw,8.5rem)] leading-none whitespace-nowrap"
+              className="pointer-events-none relative z-10 -mt-[0.62em] text-center text-[clamp(3.5rem,15vw,8.5rem)] leading-none whitespace-nowrap"
             >
               <motion.span
                 className="-m-[0.3em] block p-[0.3em]"

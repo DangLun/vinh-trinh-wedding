@@ -30,12 +30,20 @@ export type WeddingEvent = {
   mapUrl: string;
 };
 
+/** Ảnh có khai báo kích thước gốc (px), để xem lớn đúng tỉ lệ khi bấm vào */
+export type SizedImage = {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+};
+
 export type StoryMilestone = {
   date: string;
   title: string;
   text: string;
   /** Ảnh kỷ niệm của mốc (không bắt buộc), đặt trong public/images */
-  image?: { src: string; alt: string };
+  image?: SizedImage;
 };
 
 type GalleryMediaBase = {
@@ -63,7 +71,7 @@ export type WeddingConfig = {
   hashtag: string;
   marquee: string[];
   /** Ảnh chân dung trong khung vòm ở Hero (ảnh dọc, khoảng 3:4) */
-  heroImage: { src: string; alt: string };
+  heroImage: SizedImage;
   /** Thời điểm chính (tiệc cưới), ISO 8601 kèm múi giờ — dùng cho Hero và đếm ngược */
   date: string;
   /** Hạn khách hồi âm (RSVP), ISO 8601 kèm múi giờ */

@@ -1,8 +1,10 @@
 import Image from "next/image";
+import { Lightbox } from "@/components/ui/Lightbox";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { wedding } from "@/config/wedding";
+import { cn } from "@/lib/cn";
+import { LIGHTBOX_FOCUS, lightboxImage } from "@/lib/lightbox";
 import { AutoplayVideo } from "./AutoplayVideo";
-import { GalleryLightbox } from "./GalleryLightbox";
 import { GalleryReveal } from "./GalleryReveal";
 import type { GalleryItem } from "@/types/wedding";
 
@@ -44,28 +46,18 @@ function GalleryMedia({ item }: { item: GalleryItem }) {
   );
 }
 
-// Ảnh xem lớn lấy qua bộ tối ưu ảnh của Next (các cỡ phải nằm trong deviceSizes mặc định),
-// máy tự chọn cỡ hợp màn hình; ảnh gốc nhỏ hơn thì Next trả nguyên cỡ gốc, không phóng to
-const LARGE_WIDTHS = [1080, 1920, 3840];
-const optimized = (src: string, w: number) =>
-  `/_next/image?url=${encodeURIComponent(src)}&w=${w}&q=75`;
-
-/** Thuộc tính cho PhotoSwipe (GalleryLightbox) đọc khi bấm vào một mục */
+/** Thuộc tính cho PhotoSwipe (Lightbox) đọc khi bấm vào một mục */
 function lightboxProps(item: GalleryItem) {
-  const size = {
-    "data-pswp-width": item.width,
-    "data-pswp-height": item.height,
-  };
   if (item.type === "video") {
-    return { ...size, "data-pswp-type": "video", "data-poster": item.poster };
+    return {
+      href: item.src,
+      "data-pswp-width": item.width,
+      "data-pswp-height": item.height,
+      "data-pswp-type": "video",
+      "data-poster": item.poster,
+    };
   }
-  return {
-    ...size,
-    "data-pswp-src": optimized(item.src, 1920),
-    "data-pswp-srcset": LARGE_WIDTHS.map(
-      (w) => `${optimized(item.src, w)} ${w}w`,
-    ).join(", "),
-  };
+  return lightboxImage(item);
 }
 
 export default function Gallery() {
@@ -78,14 +70,16 @@ export default function Gallery() {
           src/config/wedding.ts
         </p>
       ) : (
-        <GalleryLightbox className="columns-2 gap-5 sm:columns-3 sm:gap-8">
+        <Lightbox className="columns-2 gap-5 sm:columns-3 sm:gap-8">
           {wedding.gallery.map((item, i) => (
             // Không có JavaScript thì link vẫn mở thẳng file ảnh/video
             <a
               key={item.src}
-              href={item.src}
               {...lightboxProps(item)}
-              className="focus-visible:outline-gold mb-5 block break-inside-avoid focus-visible:outline-1 focus-visible:outline-offset-4 sm:mb-8"
+              className={cn(
+                "mb-5 block break-inside-avoid sm:mb-8",
+                LIGHTBOX_FOCUS,
+              )}
             >
               <GalleryReveal
                 ratio={`${item.width} / ${item.height}`}
@@ -98,7 +92,7 @@ export default function Gallery() {
               </span>
             </a>
           ))}
-        </GalleryLightbox>
+        </Lightbox>
       )}
     </Section>
   );

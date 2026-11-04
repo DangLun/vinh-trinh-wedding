@@ -6,12 +6,13 @@ import { type ReactNode, useEffect, useRef } from "react";
 import { pauseScroll } from "@/lib/scroll";
 
 /**
- * Bấm ảnh/video trong album → xem lớn bằng PhotoSwipe (vuốt, phóng to, phím mũi tên, Esc).
- * Mỗi mục là một thẻ `a[data-pswp-width]` (Gallery dựng sẵn ở server). Thư viện chỉ tải
- * khi trang đã chạy, và phần xem lớn chỉ tải lúc bấm ảnh đầu tiên.
+ * Bấm ảnh/video bên trong → xem lớn bằng PhotoSwipe (vuốt, phóng to, phím mũi tên, Esc).
+ * Mỗi mục là một thẻ `a[data-pswp-width]` (thuộc tính lấy từ `lightboxImage`); các mục trong
+ * cùng một Lightbox là một bộ, chuyển qua lại được. Thư viện chỉ tải khi trang đã chạy,
+ * và phần xem lớn chỉ tải lúc bấm ảnh đầu tiên.
  * Video dùng kiểu nội dung riêng "video": phát khi tới slide đó, dừng khi rời đi.
  */
-export function GalleryLightbox({
+export function Lightbox({
   className,
   children,
 }: {

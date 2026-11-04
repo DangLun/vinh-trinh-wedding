@@ -23,15 +23,16 @@ export const wedding: WeddingConfig = {
     "Xuân Đinh Mùi",
     "Lễ Vu Quy",
     "Lễ Tân Hôn",
-    "Mười bốn tháng Hai",
   ],
   // Đang dùng ảnh mẫu trong album, thay bằng ảnh cưới thật (ảnh dọc, khoảng 3:4)
   heroImage: {
     src: "/images/gallery/sample/02.webp",
     alt: "Cô dâu trong nắng chiều",
+    width: 900,
+    height: 1200,
   },
   // ISO 8601, giờ Việt Nam
-  date: "2027-02-14T08:00:00+07:00",
+  date: "2027-02-13T08:00:00+07:00",
   // Hạn hồi âm: đủ sớm để chốt số bàn với nhà hàng / người nấu
   rsvpBy: "2027-01-31T23:59:00+07:00",
   events: [

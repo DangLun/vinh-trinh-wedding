@@ -13,6 +13,8 @@ export const sampleStory: StoryMilestone[] = [
     image: {
       src: "/images/gallery/sample/01.webp",
       alt: "Hai người ngồi ngắm hoàng hôn",
+      width: 1200,
+      height: 800,
     },
   },
   {
@@ -27,6 +29,8 @@ export const sampleStory: StoryMilestone[] = [
     image: {
       src: "/images/gallery/sample/12.webp",
       alt: "Chuyến đi bằng xe van",
+      width: 1200,
+      height: 800,
     },
   },
   {
@@ -36,6 +40,8 @@ export const sampleStory: StoryMilestone[] = [
     image: {
       src: "/images/gallery/sample/15.webp",
       alt: "Đứng nhìn hồ núi",
+      width: 900,
+      height: 1200,
     },
   },
   {
@@ -50,6 +56,8 @@ export const sampleStory: StoryMilestone[] = [
     image: {
       src: "/images/gallery/sample/08.webp",
       alt: "Cầu tàu bên biển",
+      width: 1200,
+      height: 800,
     },
   },
 ];
