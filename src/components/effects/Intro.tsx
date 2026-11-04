@@ -166,7 +166,7 @@ export default function Intro() {
             <motion.button
               type="button"
               onClick={open}
-              className="text-ivory/60 hover:text-ivory absolute right-5 bottom-[max(1.25rem,env(safe-area-inset-bottom))] min-h-11 px-3 text-xs tracking-[0.14em] transition-colors"
+              className="text-ivory/75 hover:text-ivory absolute right-5 bottom-[max(1.25rem,env(safe-area-inset-bottom))] min-h-11 px-3 text-xs tracking-[0.14em] transition-colors"
               animate={{ opacity: phase === "closed" ? 1 : 0 }}
               transition={{ duration: 0.4 }}
             >

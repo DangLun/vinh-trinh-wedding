@@ -94,7 +94,7 @@ export default function Countdown({
                       {/* "--" giữ chỗ trước khi JS chạy để layout không nhảy */}
                       {left ? <RollingNumber value={pad(left[key])} /> : "--"}
                     </span>
-                    <span className="text-gold text-[8cqw] tracking-[0.14em]">
+                    <span className="text-gold-deep text-[8cqw] tracking-[0.14em]">
                       {label}
                     </span>
                   </LacquerBox>

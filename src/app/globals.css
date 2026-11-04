@@ -60,15 +60,20 @@ body {
 }
 
 /*
- * Mặt sơn mài: nền then đen, ánh cánh gián loang từ trên xuống, thêm hạt mịn như mặt mài.
+ * Nền đậm đỏ rượu: quầng sáng loang từ trên xuống, thêm hạt mịn như giấy nhung.
  * Hạt là SVG nhiễu nhúng sẵn (không tải ngoài), phủ rất nhẹ để không thành "noise filter".
  */
 .lacquer {
   background-color: var(--lacquer);
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .9 0 0 0 0 .7 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(120% 70% at 50% 0%, #3b241699 0%, transparent 70%);
+    radial-gradient(120% 70% at 50% 0%, #96303f99 0%, transparent 70%);
   color: var(--ivory);
+}
+
+/* Nền sau thiệp mời: sẫm hơn để thiệp đỏ bên trong vẫn tách khỏi nền */
+.lacquer-deep {
+  background-color: var(--wineDeep);
 }
 
 /* Con trỏ tuỳ biến (CustomCursor): ẩn con trỏ hệ thống, trừ ô nhập chữ */
@@ -84,13 +89,13 @@ body {
   }
 }
 
-/* Lớp xem ảnh lớn (PhotoSwipe, components/ui/Lightbox): nền sơn mài, nút màu ngà */
+/* Lớp xem ảnh lớn (PhotoSwipe, components/ui/Lightbox): nền tối, nút màu kem */
 .pswp {
-  --pswp-bg: var(--lacquer);
-  --pswp-placeholder-bg: var(--umber);
+  --pswp-bg: var(--night);
+  --pswp-placeholder-bg: var(--night);
   --pswp-icon-color: var(--ivory);
-  --pswp-icon-color-secondary: var(--lacquer);
-  --pswp-icon-stroke-color: var(--lacquer);
+  --pswp-icon-color-secondary: var(--night);
+  --pswp-icon-stroke-color: var(--night);
   --pswp-error-text-color: var(--ivory);
   font-family: var(--font-sans), sans-serif;
 }

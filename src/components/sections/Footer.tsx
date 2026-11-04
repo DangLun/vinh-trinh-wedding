@@ -7,14 +7,14 @@ import { coupleName, lunarYear, wedding } from "@/config/wedding";
 export default function Footer({ guestName }: { guestName?: string }) {
   return (
     <footer className="lacquer relative isolate overflow-hidden px-5 py-24 text-center">
-      <MaiBranch className="absolute -right-10 -bottom-4 -z-10 w-[min(44vw,22rem)] -scale-x-100 opacity-50" />
+      <MaiBranch className="absolute -right-10 -bottom-4 -z-10 w-[min(30vw,17rem)] -scale-x-100 opacity-50" />
       <Monogram className="mx-auto size-20" />
       {guestName && (
         <p className="mt-10 font-serif text-3xl font-light italic sm:text-4xl">
           Hẹn gặp {guestName}
         </p>
       )}
-      <p className="text-ivory/60 mt-8 text-sm">
+      <p className="text-ivory/75 mt-8 text-sm">
         {coupleName}, {lunarYear} 2027
       </p>
       <p className="text-gold mt-1 text-sm">{wedding.hashtag}</p>
@@ -22,7 +22,7 @@ export default function Footer({ guestName }: { guestName?: string }) {
       {/* Ghi công người làm trang: một câu kể, bên dưới là nút tên dẫn tới Facebook
           (nút riêng thay vì link giữa câu: đủ lớn để chạm, nhìn là biết bấm được) */}
       <div className="border-gold/20 mx-auto mt-14 max-w-lg border-t pt-8">
-        <p className="text-ivory/60 text-sm text-balance">
+        <p className="text-ivory/75 text-sm text-balance">
           Thiệp do {maker.relation} tự tay làm tặng anh {wedding.groom.name}{" "}
           &amp; chị {wedding.bride.name}
         </p>

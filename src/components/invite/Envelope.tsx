@@ -445,7 +445,7 @@ export default function Envelope(props: EnvelopeProps) {
             data-lenis-prevent
             exit={{ opacity: 0, transition: { duration: 1, ease: curtain } }}
             // flex + m-auto ở con: thiệp dài hơn màn hình vẫn cuộn được tới mép trên
-            className="lacquer fixed inset-0 isolate z-[60] flex overflow-x-hidden overflow-y-auto p-4 py-12"
+            className="lacquer lacquer-deep fixed inset-0 isolate z-[60] flex overflow-x-hidden overflow-y-auto p-4 py-12"
           >
             {/* layout: lời mời hiện thêm bên dưới thì cả khối dời lên êm, không giật */}
             <motion.div

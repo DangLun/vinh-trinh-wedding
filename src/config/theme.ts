@@ -1,26 +1,31 @@
 import type { CSSProperties } from "react";
 
 /**
- * Bảng màu "Sơn Mài & Ngà" — nguồn duy nhất cho CSS (qua biến --<tên>), 3D và SVG.
- * Nền ngà như giấy thiệp; sơn then (đen sơn mài) cho Hero, phong bì, đếm ngược, footer;
- * vàng lá chỉ dùng làm nét mảnh và chữ nhỏ; đỏ son là điểm nhấn duy nhất (5–10% trang).
+ * Bảng màu "Đỏ Rượu & Kem" — nguồn duy nhất cho CSS (qua biến --<tên>) và SVG.
+ * Nền kem trắng như giấy thiệp; đỏ rượu cho Hero, đếm ngược, footer, màn mở đầu;
+ * vàng lá chỉ dùng làm nét mảnh và chữ nhỏ.
+ * Tên `lacquer`, `son` giữ từ bản sơn mài cũ: nay là nền đậm và màu nút, đều đỏ rượu.
  * Thêm màu mới ở đây rồi khai báo thêm trong @theme của globals.css để có class Tailwind.
  */
 export const palette = {
-  // Nền chính, giấy ngà
-  ivory: "#faf6ee",
-  // Nền phụ, giấy dó / vỏ trứng sơn mài
-  paper: "#efe6d2",
-  // Sơn then: đen sơn mài
-  lacquer: "#14100d",
-  // Nâu cánh gián, lớp dưới của sơn mài
-  umber: "#3b2416",
+  // Nền chính, kem trắng
+  ivory: "#f5f1ea",
+  // Nền phụ: thẻ giấy trên nền kem
+  paper: "#ece4d6",
+  // Nền đậm: đỏ rượu
+  lacquer: "#7a1f2b",
+  // Quầng sáng trên nền đậm
+  umber: "#96303f",
+  // Đỏ rượu sẫm: nền sau thiệp mời, để thiệp đỏ bên trong vẫn nổi
+  wineDeep: "#4f131c",
+  // Nền tối của lớp xem ảnh lớn: ảnh trên nền tối dễ xem hơn trên nền đỏ
+  night: "#14100d",
   // Vàng lá: nét mảnh, chữ nhỏ trên nền tối
-  gold: "#c9a24a",
+  gold: "#dcb862",
   // Vàng lá đậm: chữ vàng trên nền ngà (đủ tương phản)
-  goldDeep: "#8a6a2b",
-  // Đỏ son: điểm nhấn duy nhất (nút chính, dấu sáp, sợi chỉ, tráp)
-  son: "#9e1b1b",
+  goldDeep: "#73561f",
+  // Điểm nhấn trên nền kem (nút chính, sợi chỉ, thông báo lỗi)
+  son: "#7a1f2b",
   // Chữ mực
   ink: "#2a2522",
   // Thiệp mời (theo mẫu thiệp giấy): nền trắng ngà, chữ đỏ rượu, chữ phụ xám ấm

@@ -36,7 +36,7 @@ export function BackToTop() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 16 }}
             transition={{ duration: 0.6, ease: easeLuxe }}
-            className="group bg-lacquer/85 text-gold focus-visible:outline-gold fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 grid size-12 cursor-pointer place-items-center rounded-full backdrop-blur-sm focus-visible:outline-2 focus-visible:outline-offset-4 sm:right-6 sm:bottom-6 sm:size-14"
+            className="group bg-lacquer text-gold focus-visible:outline-gold fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 grid size-12 cursor-pointer place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 sm:right-6 sm:bottom-6 sm:size-14"
           >
             <svg
               viewBox="0 0 48 48"

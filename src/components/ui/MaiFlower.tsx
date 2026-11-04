@@ -29,7 +29,7 @@ export function MaiFlower({
           transform={`rotate(${k * 72} 12 12)`}
         />
       ))}
-      <circle cx={12} cy={12} r={1.6} fill={palette.son} />
+      <circle cx={12} cy={12} r={1.6} fill={color} />
     </g>
   );
 }
